@@ -1,0 +1,26 @@
+{% if user.is_authenticated %}
+  {% if is_registered %}
+    <div style="margin-top:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <span class="muted">✅ Вы уже записаны на это событие</span>
+      <form method="post" action="/registrations/event/{{ event.id }}/unregister/" style="margin:0;">
+        {% csrf_token %}
+        <button class="button" type="submit" style="margin-top:0; background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.35);">
+          Отменить запись
+        </button>
+      </form>
+      <a class="muted" href="/registrations/my/">Мои записи</a>
+    </div>
+  {% else %}
+    <form method="post" action="/registrations/event/{{ event.id }}/" style="margin-top:12px;">
+      {% csrf_token %}
+      <button class="button" type="submit" style="margin-top:0;">Записаться</button>
+      <a class="muted" href="/registrations/my/" style="margin-left:10px;">Мои записи</a>
+    </form>
+  {% endif %}
+{% else %}
+  <div style="margin-top:12px;">
+    <a class="button" href="/accounts/login/?next=/program/{{ event.id }}/" style="margin-top:0;">
+      Войти, чтобы записаться
+    </a>
+  </div>
+{% endif %}

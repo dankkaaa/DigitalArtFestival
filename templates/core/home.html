@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <h1>Фестиваль цифрового искусства</h1>
+  <p class="muted">
+    Интерактивные инсталляции, генеративная сцена, программа событий и галерея работ.
+  </p>
+
+  <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:14px;">
+    <a class="button" href="/gen/stage/">Открыть Generative Stage →</a>
+    <a class="button" href="/program/" style="background: rgba(255,255,255,.65); color: var(--text); border:1px solid var(--line); box-shadow: 0 10px 22px rgba(15,23,42,.06);">
+      Смотреть программу →
+    </a>
+  </div>
+
+  <div class="muted" style="margin-top:12px; font-size:13px;">
+    ✦ 2026 — старт платформы • ✦ 2030 — гибридный фестиваль будущего
+  </div>
+</section>
+
+<section class="grid" style="margin-top:16px;">
+  <article class="card" style="grid-column: span 4;">
+    <h3 style="margin-bottom:6px;">Витрина работ</h3>
+    <p class="muted" style="margin-top:0;">
+      Лучшие визуальные эксперименты: generative, AI, motion, installations.
+    </p>
+    <a class="button" href="/gallery/">Открыть галерею →</a>
+  </article>
+
+  <article class="card" style="grid-column: span 4;">
+    <h3 style="margin-bottom:6px;">События и программа</h3>
+    <p class="muted" style="margin-top:0;">
+      Лекции, перформансы, выставки и кураторские показы. Записывайся онлайн.
+    </p>
+    <a class="button" href="/program/">Перейти в программу →</a>
+  </article>
+
+  <article class="card" style="grid-column: span 4;">
+    <h3 style="margin-bottom:6px;">Участие</h3>
+    <p class="muted" style="margin-top:0;">
+      Регистрируйся, сохраняй события в “Мои записи” и управляй участием.
+    </p>
+    {% if user.is_authenticated %}
+      <a class="button" href="/registrations/my/">Мои записи →</a>
+    {% else %}
+      <a class="button" href="/accounts/signup/">Создать аккаунт →</a>
+    {% endif %}
+  </article>
+</section>
+
+<section class="grid" style="margin-top:14px;">
+  <article class="card" style="grid-column: span 7;">
+    <h2 style="margin-bottom:8px;">О фестивале</h2>
+    <p class="muted" style="margin-top:0;">
+      Digital Art Festival объединяет цифровых художников, кураторов и зрителей.
+      Здесь встречаются генеративные практики, интерактивные инсталляции и новые форматы выставок.
+    </p>
+    <p class="muted">
+      Наша идея — не просто показать работы, а построить платформу, где искусство “живёт”:
+      развивается, обсуждается и становится частью городской среды.
+    </p>
+  </article>
+
+  <article class="card" style="grid-column: span 5;">
+    <h2 style="margin-bottom:8px;">В цифрах</h2>
+    <div class="grid" style="gap:10px;">
+      <div class="card" style="grid-column: span 6; padding:14px;">
+        <div style="font-weight:900; font-size:22px;">2026</div>
+        <div class="muted" style="font-size:13px;">Запуск платформы</div>
+      </div>
+      <div class="card" style="grid-column: span 6; padding:14px;">
+        <div style="font-weight:900; font-size:22px;">5+</div>
+        <div class="muted" style="font-size:13px;">направлений искусства</div>
+      </div>
+      <div class="card" style="grid-column: span 6; padding:14px;">
+        <div style="font-weight:900; font-size:22px;">Live</div>
+        <div class="muted" style="font-size:13px;">интерактив и стримы</div>
+      </div>
+      <div class="card" style="grid-column: span 6; padding:14px;">
+        <div style="font-weight:900; font-size:22px;">2030</div>
+        <div class="muted" style="font-size:13px;">гибридный формат</div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- FUTURE 2030 -->
+<section class="future">
+  <div class="future__sticky">
+    <div class="future__panel">
+      <div class="future__top">
+        <div>
+          <div class="future__kicker">Будущее фестиваля</div>
+          <h2 class="future__title">Дорожная карта до 2030</h2>
+          <div class="muted">Прокручивай вниз — годы будут “перелистываться”.</div>
+        </div>
+
+        <div class="future__progress" aria-label="Прогресс дорожной карты">
+          <div class="future__progressBar" id="futureBar"></div>
+        </div>
+      </div>
+
+      <div class="future__legend" aria-label="Годы дорожной карты">
+        <span data-year="2026">2026</span>
+        <span data-year="2027">2027</span>
+        <span data-year="2028">2028</span>
+        <span data-year="2029">2029</span>
+        <span data-year="2030">2030</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="future__track" id="futureTrack">
+
+    <article class="future__card" data-year="2026">
+      <div class="future__year">2026</div>
+      <h3>Запуск платформы</h3>
+      <p class="muted">Генеративная сцена, программа событий, первые коллаборации.</p>
+      <ul class="future__list">
+        <li>Профили участников</li>
+        <li>Запись на события</li>
+        <li>Онлайн-галерея</li>
+      </ul>
+    </article>
+
+    <article class="future__card" data-year="2027">
+      <div class="future__year">2027</div>
+      <h3>Интерактив и сообщество</h3>
+      <p class="muted">Социальные механики, рейтинги работ, живые обсуждения.</p>
+      <ul class="future__list">
+        <li>Лайвы и стримы</li>
+        <li>Кураторские подборки</li>
+        <li>Комьюнити-ивенты</li>
+      </ul>
+    </article>
+
+    <article class="future__card" data-year="2028">
+      <div class="future__year">2028</div>
+      <h3>AI-режиссура и экспозиции</h3>
+      <p class="muted">Сценарии выставок, интерактивные маршруты, персональные рекомендации.</p>
+      <ul class="future__list">
+        <li>AI-куратор</li>
+        <li>Аудиогид по работам</li>
+        <li>Карта инсталляций</li>
+      </ul>
+    </article>
+
+    <article class="future__card" data-year="2029">
+      <div class="future__year">2029</div>
+      <h3>Города и партнёры</h3>
+      <p class="muted">Поп-ап выставки, фестивальные недели, партнёрские площадки.</p>
+      <ul class="future__list">
+        <li>Выездные показы</li>
+        <li>Коллабы с музеями</li>
+        <li>Гранты и резиденции</li>
+      </ul>
+    </article>
+
+    <article class="future__card" data-year="2030">
+      <div class="future__year">2030</div>
+      <h3>Гибридный фестиваль будущего</h3>
+      <p class="muted">AR/VR маршруты, метавыставки, “живые” генеративные сцены в реальном времени.</p>
+      <ul class="future__list">
+        <li>AR-инсталляции</li>
+        <li>VR-экспозиции</li>
+        <li>Глобальные трансляции</li>
+      </ul>
+    </article>
+
+  </div>
+</section>
+
+<section class="hero" style="margin-top:18px;">
+  <h2 style="margin-bottom:6px;">Готов стать частью фестиваля?</h2>
+  <p class="muted" style="margin-top:0;">
+    Выбирай события, сохраняй в “Мои записи” и следи за обновлениями программы.
+  </p>
+  <div style="display:flex; gap:12px; flex-wrap:wrap;">
+    <a class="button" href="/program/">Открыть программу →</a>
+    <a class="button" href="/gallery/" style="background: rgba(255,255,255,.65); color: var(--text); border:1px solid var(--line); box-shadow: 0 10px 22px rgba(15,23,42,.06);">
+      Смотреть галерею →
+    </a>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const track = document.getElementById('futureTrack');
+    const bar = document.getElementById('futureBar');
+    if (!track || !bar) return;
+
+    const cards = Array.from(track.querySelectorAll('.future__card'));
+    const legendItems = Array.from(document.querySelectorAll('.future__legend [data-year]'));
+
+    function setActiveYear(year) {
+      cards.forEach(c => c.classList.toggle('is-active', c.dataset.year === year));
+      legendItems.forEach(el => el.classList.toggle('is-active', el.dataset.year === year));
+    }
+
+    function updateProgress() {
+      const rect = track.getBoundingClientRect();
+      const viewport = window.innerHeight || document.documentElement.clientHeight;
+
+      const total = rect.height + viewport;
+      const passed = viewport - rect.top;
+      const p = Math.max(0, Math.min(1, passed / total));
+
+      bar.style.width = (p * 100).toFixed(1) + '%';
+    }
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add('is-visible');
+      });
+
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .map(e => ({ el: e.target, ratio: e.intersectionRatio }))
+        .sort((a, b) => b.ratio - a.ratio)[0];
+
+      if (visible && visible.el.dataset.year) {
+        setActiveYear(visible.el.dataset.year);
+      }
+    }, {
+      root: null,
+      rootMargin: "-35% 0px -45% 0px",
+      threshold: [0.15, 0.25, 0.35, 0.5, 0.65]
+    });
+
+    cards.forEach(card => io.observe(card));
+
+    legendItems.forEach((el) => {
+      el.style.cursor = "pointer";
+      el.addEventListener('click', () => {
+        const year = el.dataset.year;
+        const target = cards.find(c => c.dataset.year === year);
+        if (!target) return;
+
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        setActiveYear(year);
+      });
+    });
+
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
+
+    setActiveYear(cards[0]?.dataset.year || "2026");
+  })();
+</script>
+
+{% endblock %}

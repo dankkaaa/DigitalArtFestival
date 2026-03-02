@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}{{ artwork.title }}{% endblock %}
+
+{% block content %}
+<a class="muted" href="/gallery/">← назад в галерею</a>
+
+<section class="hero" style="margin-top:12px;">
+  <h2 style="margin:0 0 8px 0;">{{ artwork.title }}</h2>
+  <div class="muted">
+    {% if artwork.author_name %}{{ artwork.author_name }} • {% endif %}
+    {{ artwork.created_at|date:"d.m.Y H:i" }}
+  </div>
+
+  {% if artwork.tags %}
+    <div class="muted" style="margin-top:8px;"># {{ artwork.tags }}</div>
+  {% endif %}
+
+  {# ===== Actions: share + like ===== #}
+  <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+
+    <button class="button" type="button" onclick="copyLink()" style="margin-top:0;">
+      Копировать ссылку
+    </button>
+
+    <a class="button" style="margin-top:0;"
+       href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}&text={{ artwork.title|urlencode }}"
+       target="_blank" rel="noopener">
+      Telegram
+    </a>
+
+    <a class="button" style="margin-top:0;"
+       href="https://vk.com/share.php?url={{ request.build_absolute_uri|urlencode }}"
+       target="_blank" rel="noopener">
+      VK
+    </a>
+
+    <div style="flex:1;"></div>
+
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'gallery:like' artwork.id %}" style="margin:0;">
+        {% csrf_token %}
+        <button class="button" type="submit" style="margin-top:0;">
+          ❤️ {{ artwork.likes.count }}
+        </button>
+      </form>
+    {% else %}
+      <a class="button" href="/accounts/login/?next=/gallery/{{ artwork.id }}/" style="margin-top:0;">
+        ❤️ {{ artwork.likes.count }}
+      </a>
+    {% endif %}
+
+  </div>
+  {# ===== end actions ===== #}
+</section>
+
+<div class="card" style="padding:0; overflow:hidden;">
+  <div style="width:100%; height:min(70vh, 720px); background: rgba(255,255,255,.55);">
+    <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}"
+         style="width:100%; height:100%; object-fit:cover; display:block;">
+  </div>
+</div>
+
+{% if artwork.description %}
+  <div class="card" style="margin-top:14px;">
+    <h3 style="margin:0 0 8px 0;">Описание</h3>
+    <div class="muted" style="white-space:pre-wrap;">{{ artwork.description }}</div>
+  </div>
+{% endif %}
+
+{# ===== Обсуждение / комментарии ===== #}
+<div class="card" style="margin-top:14px;">
+  <h3 style="margin:0 0 10px 0;">Обсуждение</h3>
+
+  {% if user.is_authenticated %}
+    <form method="post" style="margin-bottom:12px;">
+      {% csrf_token %}
+      {{ comment_form.text }}
+      <button class="button" type="submit" style="margin-top:10px;">Отправить</button>
+    </form>
+  {% else %}
+    <div class="muted" style="margin-bottom:12px;">
+      <a href="/accounts/login/?next=/gallery/{{ artwork.id }}/">Войдите</a>, чтобы комментировать.
+    </div>
+  {% endif %}
+
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    {% for c in comments %}
+      <div style="padding:12px; border-radius:16px; border:1px solid rgba(15,23,42,.08); background: rgba(255,255,255,.65);">
+        <div class="muted" style="font-size:13px; display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
+          <div>
+            <strong style="color:#0f172a;">{{ c.user.username }}</strong>
+            • {{ c.created_at|date:"d.m.Y H:i" }}
+          </div>
+
+          {% if user.is_authenticated %}
+            {% if user.is_staff or c.user_id == user.id %}
+              <form method="post" action="{% url 'gallery:comment_delete' c.id %}" style="margin:0;">
+                {% csrf_token %}
+                <button class="muted" type="submit"
+                        style="border:none; background:transparent; cursor:pointer; padding:0;">
+                  удалить
+                </button>
+              </form>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <div style="margin-top:6px; white-space:pre-wrap;">{{ c.text }}</div>
+      </div>
+    {% empty %}
+      <div class="muted">Пока нет комментариев. Будьте первым 🙂</div>
+    {% endfor %}
+  </div>
+</div>
+{# ===== конец обсуждения ===== #}
+
+<script>
+function copyLink() {
+  const url = window.location.href;
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Ссылка скопирована!");
+    });
+  } else {
+    // fallback для http / старых браузеров
+    const ta = document.createElement("textarea");
+    ta.value = url;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+    alert("Ссылка скопирована!");
+  }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h2>Регистрация</h2>
+  <p class="muted">Создай аккаунт, чтобы записываться на события.</p>
+</section>
+
+<div class="card" style="max-width:520px; margin:0 auto;">
+
+  <form method="post" class="form">
+    {% csrf_token %}
+
+    <label class="label">Имя пользователя</label>
+    {{ form.username }}
+
+    <div class="muted" style="font-size:13px; margin-top:4px;">
+      До 150 символов. Буквы, цифры и @/./+/-/_
+    </div>
+
+    <div style="height:14px"></div>
+
+    <label class="label">Пароль</label>
+    {{ form.password1 }}
+
+    <div class="muted" style="font-size:13px;">
+      Пароль должен содержать минимум 8 символов и не быть слишком простым.
+    </div>
+
+    <div style="height:14px"></div>
+
+    <label class="label">Подтверждение пароля</label>
+    {{ form.password2 }}
+
+    <div style="height:18px"></div>
+
+    <button class="button" type="submit">
+      Зарегистрироваться
+    </button>
+
+  </form>
+</div>
+{% endblock %}

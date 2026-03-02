@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Мои записи{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h2>Мои записи</h2>
+  <p class="muted">Список событий, на которые вы записались.</p>
+</section>
+
+<div class="grid">
+  {% for r in regs %}
+    <a class="card" href="/program/{{ r.event.id }}/" style="grid-column: span 6;">
+      <div class="muted" style="font-size:14px;">
+        {{ r.event.starts_at|date:"d.m.Y H:i" }} • {{ r.event.get_format_display }}
+      </div>
+      <div style="font-weight:800; font-size:18px; margin-top:6px;">
+        {{ r.event.title }}
+      </div>
+      <div class="muted" style="margin-top:6px;">
+        {% if r.event.location %}📍 {{ r.event.location }}{% endif %}
+      </div>
+    </a>
+  {% empty %}
+    <div class="card" style="grid-column: span 12;">
+      <h3 style="margin:0 0 6px 0;">Пока пусто</h3>
+      <div class="muted">Открой программу и нажми “Записаться”.</div>
+      <a class="button" href="/program/">Перейти в программу</a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
