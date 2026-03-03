@@ -2,58 +2,47 @@
 {% block title %}Загрузить работу{% endblock %}
 
 {% block content %}
-<a class="muted" href="/gallery/">← назад в галерею</a>
+ <div class="container" style="max-width: 800px; margin: 0 auto; padding: 0 15px; ">
 
-<section class="hero" style="margin-top:12px;">
-  <h2 style="margin:0 0 8px 0;">Загрузить работу</h2>
-  <div class="muted">JPG/PNG. Заполни название, описание и теги.</div>
-</section>
 
-<div class="card">
-  <form method="post" enctype="multipart/form-data" style="display:grid; gap:12px;">
-    {% csrf_token %}
+        <section class="hero" style="padding-top: 150px;">
+            <h2>Загрузить работу</h2>
+            <div class="muted">JPG/PNG. Заполни название, описание и теги.</div>
+        </section>
 
-    <label>
-      <div class="muted" style="margin-bottom:6px;">Название</div>
-      {{ form.title }}
-    </label>
+        <div class="card">
+            <form method="post" enctype="multipart/form-data" style="display:grid; gap:12px;">
+                {% csrf_token %}
 
-    <label>
-      <div class="muted" style="margin-bottom:6px;">Автор (опционально)</div>
-      {{ form.author_name }}
-    </label>
+                <label>
+                    <div class="muted">Название</div>
+                    {{ form.title }}
+                </label>
 
-    <label>
-      <div class="muted" style="margin-bottom:6px;">Описание</div>
-      {{ form.description }}
-    </label>
+                <label>
+                    <div class="muted">Автор (опционально)</div>
+                    {{ form.author_name }}
+                </label>
 
-    <label>
-      <div class="muted" style="margin-bottom:6px;">Изображение</div>
-      {{ form.image }}
-    </label>
+                <label>
+                    <div class="muted">Описание</div>
+                    {{ form.description }}
+                </label>
 
-    <label>
-      <div class="muted" style="margin-bottom:6px;">Теги</div>
-      {{ form.tags }}
-    </label>
+                <label>
+                    <div class="muted">Изображение</div>
+                    {{ form.image }}
+                </label>
 
-    <button class="button" type="submit" style="justify-self:start;">Опубликовать</button>
-  </form>
-</div>
+                <label>
+                    <div class="muted">Теги</div>
+                    {{ form.tags }}
+                </label>
 
-<style>
-/* маленькая косметика для инпутов формы */
-input[type="text"], textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.06);
-  color: var(--text);
-}
-input[type="file"]{
-  color: var(--muted);
-}
-</style>
+                <button class="button" type="submit">Опубликовать</button>
+            </form>
+                            <a class="muted-link" href="/gallery/">← назад в галерею</a>
+        </div>
+
+    </div>
 {% endblock %}

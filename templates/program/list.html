@@ -2,7 +2,7 @@
 {% block title %}Программа фестиваля{% endblock %}
 
 {% block content %}
-<section class="hero" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+<section class="hero" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding-top: 150px;">
   <div>
     <h2 style="margin:0 0 6px 0;">Программа фестиваля</h2>
     <div class="muted">События, лекции, воркшопы и перформансы.</div>
@@ -37,7 +37,7 @@
 <div class="grid">
   {% for e in events %}
     <a class="card" href="/program/{{ e.id }}/" style="grid-column: span 6;">
-      <div class="muted" style="font-size:14px; margin-bottom:6px;">
+      <div class="muted" style="margin-bottom:6px;">
         {{ e.starts_at|date:"d.m.Y H:i" }} • {{ e.get_format_display }}
       </div>
       <div style="font-weight:800; font-size:18px; margin-bottom:6px;">{{ e.title }}</div>

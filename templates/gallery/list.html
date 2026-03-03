@@ -1,238 +1,135 @@
 {% extends "base.html" %}
 {% block title %}Галерея{% endblock %}
 
+
+    <!-- ОСНОВНОЙ КОНТЕНТ (БЛОК CONTENT) -->
 {% block content %}
-
-<section class="gallery-hero">
-  <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-    <div>
-      <h1 style="margin-bottom:6px;">Галерея работ</h1>
-      <p class="muted" style="margin-top:0;">
-        Нажми на работу — откроется просмотр.
-      </p>
-    </div>
-
-    {% if user.is_authenticated %}
-      <a class="button" href="{% url 'gallery:create' %}" style="margin-top:0;">Загрузить работу →</a>
-    {% else %}
-      <a class="button" href="/accounts/login/" style="margin-top:0;">Войти, чтобы загрузить →</a>
-    {% endif %}
-  </div>
-
-  <div class="gallery-toolbar">
-    <div class="chips" id="chips">
-      <button class="chip is-active" data-filter="all" type="button">Все</button>
-      <button class="chip" data-filter="generative" type="button">Generative</button>
-      <button class="chip" data-filter="ai" type="button">AI</button>
-      <button class="chip" data-filter="motion" type="button">Motion</button>
-      <button class="chip" data-filter="installations" type="button">Installations</button>
-    </div>
-
-    <div class="gallery-search">
-      <input id="search" type="search" placeholder="Поиск по названию или автору…" />
-    </div>
-  </div>
-</section>
-
-<section class="gallery-grid" id="grid">
-
-  {% if artworks %}
-    {% for art in artworks %}
-      {# категория: пока берём из tags (если хочешь — сделаем отдельное поле category) #}
-      {% with cat="generative" %}
-        <article class="gallery-item"
-                 data-cat="{{ cat }}"
-                 data-title="{{ art.title }} {{ art.author_name }}"
-                 data-size="normal"
-                 data-img="{{ art.image.url }}"
-                 data-author="{{ art.author_name }}"
-                 data-year="{{ art.created_at|date:'Y' }}"
-                 data-detail-url="{% url 'gallery:detail' art.pk %}"
-                 data-likes="{{ art.likes.count }}">
-
-          <img src="{{ art.image.url }}" alt="{{ art.title }}">
-
-          <div class="gallery-meta">
+    <section class="gallery-hero">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;">
             <div>
-              <p class="gallery-title">{{ art.title }}</p>
-              <p class="gallery-sub">{% if art.author_name %}{{ art.author_name }}{% else %}Без автора{% endif %}</p>
-            </div>
-            <div class="badges">
-              <span class="badge-pill">{{ cat }}</span>
-              <span class="badge-pill">{{ art.created_at|date:"Y" }}</span>
-            </div>
-          </div>
-
-          {# ===== actions row: likes + open ===== #}
-          <div style="margin-top:10px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-            <div class="muted" style="font-size:14px;">
-              ❤️ {{ art.likes.count }}
+                <h1 style="margin-bottom:6px; margin-top: 200px">Галерея работ</h1>
+                <p class="muted" style="margin-top:0;">
+                    Нажми на работу — откроется просмотр.
+                </p>
             </div>
 
             {% if user.is_authenticated %}
-              <form method="post" action="{% url 'gallery:like' art.id %}" style="margin:0;" data-stop-click="1">
-                {% csrf_token %}
-                <button class="button" type="submit" style="margin-top:0; padding:10px 14px;" data-stop-click="1">
-                  Лайк
-                </button>
-              </form>
+                <a class="button" href="{% url 'gallery:create' %}" style="margin-top:120px;">Загрузить работу →</a>
             {% else %}
-              <a class="button" href="/accounts/login/?next=/gallery/" style="margin-top:0; padding:10px 14px;" data-stop-click="1">
-                Войти чтобы лайкнуть
-              </a>
+                <a class="button" href="/accounts/login/" style="margin-top:120px;">Войти, чтобы загрузить →</a>
             {% endif %}
-
-            <a class="muted" href="{% url 'gallery:detail' art.pk %}" data-stop-click="1">Открыть страницу →</a>
-          </div>
-          {# ===== end actions ===== #}
-
-        </article>
-      {% endwith %}
-    {% endfor %}
-  {% else %}
-    <div class="card" style="grid-column: span 12;">
-      <h3 style="margin-bottom:6px;">Пока нет работ</h3>
-      <p class="muted" style="margin-top:0;">Загрузи первую работу — и она появится в галерее.</p>
-      {% if user.is_authenticated %}
-        <a class="button" href="{% url 'gallery:create' %}">Загрузить работу →</a>
-      {% else %}
-        <a class="button" href="/accounts/login/">Войти →</a>
-      {% endif %}
-    </div>
-  {% endif %}
-
-</section>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox" aria-hidden="true">
-  <div class="lightbox-card" role="dialog" aria-modal="true" aria-label="Просмотр работы">
-    <div class="lightbox-top">
-      <div>
-        <p class="lightbox-title" id="lbTitle" style="margin:0;">Работа</p>
-        <div class="muted" id="lbSub" style="font-size:13px;">Автор • Год • Категория</div>
-      </div>
-      <button class="lightbox-close" id="lbClose" type="button">Закрыть ✕</button>
-    </div>
-
-    <div class="lightbox-body">
-      <div class="lightbox-media">
-        <img id="lbImg" src="" alt="">
-      </div>
-      <div class="lightbox-info">
-        <h3 style="margin-bottom:6px;">Описание</h3>
-        <p class="muted" id="lbDesc" style="margin-top:0;">—</p>
-
-        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="button" id="lbOpenPage" href="#">Открыть страницу →</a>
-          <a class="button" href="/gen/stage/">Попробовать Generative Stage →</a>
         </div>
 
-        <div class="muted" id="lbLikes" style="margin-top:12px; font-size:14px;">
-          ❤️ 0
+        <div class="gallery-toolbar">
+            <div class="chips" id="chips">
+                <button class="chip is-active" data-filter="all" type="button">Все</button>
+                <button class="chip" data-filter="generative" type="button">Generative</button>
+                <button class="chip" data-filter="ai" type="button">AI</button>
+                <button class="chip" data-filter="motion" type="button">Motion</button>
+                <button class="chip" data-filter="installations" type="button">Installations</button>
+            </div>
+
+            <div class="gallery-search">
+                <input id="search" type="search" placeholder="Поиск по названию или автору…" />
+            </div>
         </div>
-      </div>
+    </section>
+
+    <section class="gallery-grid" id="grid">
+        {% if artworks %}
+            {% for art in artworks %}
+                {# категория: пока берём из tags (если хочешь — сделаем отдельное поле category) #}
+                {% with cat="generative" %}
+                    <article class="gallery-item"
+                             data-cat="{{ cat }}"
+                             data-title="{{ art.title }} {{ art.author_name }}"
+                             data-size="normal"
+                             data-img="{{ art.image.url }}"
+                             data-author="{{ art.author_name }}"
+                             data-year="{{ art.created_at|date:'Y' }}"
+                             data-detail-url="{% url 'gallery:detail' art.pk %}"
+                             data-likes="{{ art.likes.count }}">
+
+                        <img src="{{ art.image.url }}" alt="{{ art.title }}">
+
+                        <div class="gallery-meta">
+                            <div>
+                                <p class="gallery-title">{{ art.title }}</p>
+                                <p class="gallery-sub">{% if art.author_name %}{{ art.author_name }}{% else %}Без автора{% endif %}</p>
+                            </div>
+                            <div class="badges">
+                                <span class="badge-pill">{{ cat }}</span>
+                                <span class="badge-pill">{{ art.created_at|date:"Y" }}</span>
+                            </div>
+                        </div>
+
+                        {# ===== actions row: likes + open ===== #}
+                        <div style="margin-top:10px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+                            <div class="muted" style="font-size:14px;">
+                                ❤️ {{ art.likes.count }}
+                            </div>
+
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'gallery:like' art.id %}" style="margin:0;" data-stop-click="1">
+                                    {% csrf_token %}
+                                    <button class="button" type="submit" style="margin-top:0; padding:10px 14px;" data-stop-click="1">
+                                        Лайк
+                                    </button>
+                                </form>
+                            {% else %}
+                                <a class="button" href="/accounts/login/?next=/gallery/" style="margin-top:0; padding:10px 14px;" data-stop-click="1">
+                                    Войти чтобы лайкнуть
+                                </a>
+                            {% endif %}
+
+                            <a class="muted" href="{% url 'gallery:detail' art.pk %}" data-stop-click="1">Открыть страницу →</a>
+                        </div>
+                        {# ===== end actions ===== #}
+                    </article>
+                {% endwith %}
+            {% endfor %}
+        {% else %}
+            <div class="card" style="grid-column: span 12; border:2px solid #15173D; padding:2rem; text-align:center;">
+                <h3 style="margin-bottom:6px; font-family:'Buse';">Пока нет работ</h3>
+                <p class="muted" style="margin-top:0;">Загрузи первую работу — и она появится в галерее.</p>
+                {% if user.is_authenticated %}
+                    <a class="button" href="{% url 'gallery:create' %}">Загрузить работу →</a>
+                {% else %}
+                    <a class="button" href="/accounts/login/">Войти →</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+        <div class="lightbox-card" role="dialog" aria-modal="true" aria-label="Просмотр работы">
+            <div class="lightbox-top">
+                <div>
+                    <p class="lightbox-title" id="lbTitle" style="margin:0;">Работа</p>
+                    <div class="muted" id="lbSub" style="font-size:13px;">Автор • Год • Категория</div>
+                </div>
+                <button class="lightbox-close" id="lbClose" type="button">Закрыть ✕</button>
+            </div>
+
+            <div class="lightbox-body">
+                <div class="lightbox-media">
+                    <img id="lbImg" src="" alt="">
+                </div>
+                <div class="lightbox-info">
+                    <h3 style="margin-bottom:6px;">Описание</h3>
+                    <p class="muted" id="lbDesc" style="margin-top:0;">—</p>
+
+                    <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+                        <a class="button" id="lbOpenPage" href="#">Открыть страницу →</a>
+                        <a class="button" href="/gen/stage/">Попробовать Generative Stage →</a>
+                    </div>
+
+                    <div class="muted" id="lbLikes" style="margin-top:12px; font-size:14px;">
+                        ❤️ 0
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-<script>
-  (function(){
-    const grid = document.getElementById('grid');
-    const chips = document.getElementById('chips');
-    const search = document.getElementById('search');
-
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
-    const lbTitle = document.getElementById('lbTitle');
-    const lbSub = document.getElementById('lbSub');
-    const lbDesc = document.getElementById('lbDesc');
-    const lbClose = document.getElementById('lbClose');
-    const lbOpenPage = document.getElementById('lbOpenPage');
-    const lbLikes = document.getElementById('lbLikes');
-
-    if (!grid) return;
-
-    const items = Array.from(grid.querySelectorAll('.gallery-item'));
-    let activeFilter = 'all';
-    let q = '';
-
-    function apply(){
-      const query = q.trim().toLowerCase();
-      items.forEach((el) => {
-        const cat = (el.dataset.cat || '').toLowerCase();
-        const text = (el.dataset.title || '').toLowerCase();
-
-        const okCat = (activeFilter === 'all') || (cat === activeFilter);
-        const okQ = !query || text.includes(query);
-
-        el.style.display = (okCat && okQ) ? '' : 'none';
-      });
-    }
-
-    if (chips){
-      chips.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-filter]');
-        if (!btn) return;
-        activeFilter = btn.dataset.filter;
-        Array.from(chips.querySelectorAll('.chip')).forEach(c => c.classList.toggle('is-active', c === btn));
-        apply();
-      });
-    }
-
-    if (search){
-      search.addEventListener('input', () => {
-        q = search.value || '';
-        apply();
-      });
-    }
-
-    function openLB(el){
-      const img = el.dataset.img || el.querySelector('img')?.src || '';
-      const title = el.querySelector('.gallery-title')?.textContent?.trim() || 'Работа';
-      const author = el.dataset.author || el.querySelector('.gallery-sub')?.textContent?.trim() || '';
-      const year = el.dataset.year || '';
-      const cat = (el.dataset.cat || '').toUpperCase();
-      const detailUrl = el.dataset.detailUrl || '#';
-      const likes = el.dataset.likes || '0';
-
-      lbImg.src = img;
-      lbImg.alt = title;
-      lbTitle.textContent = title;
-      lbSub.textContent = [author, year, cat].filter(Boolean).join(' • ');
-      lbDesc.textContent = 'Открой страницу работы, чтобы увидеть описание и комментарии.';
-      if (lbOpenPage) lbOpenPage.href = detailUrl;
-      if (lbLikes) lbLikes.textContent = '❤️ ' + likes;
-
-      lb.classList.add('is-open');
-      lb.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLB(){
-      lb.classList.remove('is-open');
-      lb.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-      lbImg.src = '';
-    }
-
-    items.forEach((el) => el.addEventListener('click', (e) => {
-      // если клик по ссылке/кнопке/форме — не перехватываем (лайк, открыть страницу, логин)
-      if (e.target.closest('a')) return;
-      if (e.target.closest('button')) return;
-      if (e.target.closest('form')) return;
-      if (e.target.closest('[data-stop-click="1"]')) return;
-
-      openLB(el);
-    }));
-
-    lbClose?.addEventListener('click', closeLB);
-    lb?.addEventListener('click', (e) => { if (e.target === lb) closeLB(); });
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lb.classList.contains('is-open')) closeLB();
-    });
-
-    apply();
-  })();
-</script>
-
 {% endblock %}

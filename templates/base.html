@@ -1,141 +1,173 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>{% block title %}Digital Art Festival{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Digital Art Festival{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-<body>
-
-<header class="topbar">
-  <div class="container row">
-
-    <!-- BRAND -->
-    <a class="brand" href="/" style="display:flex;align-items:center;gap:10px;">
-      Digital Art Festival
-      <span class="badge">2026</span>
-    </a>
-
-    <!-- NAVIGATION -->
-    <nav class="nav">
-
-      <a href="/" class="{% if request.path == '/' %}active{% endif %}">
-        Главная
-      </a>
-
-      <a href="/gen/stage/"
-         class="{% if '/gen/' in request.path %}active{% endif %}">
-        Generative
-      </a>
-
-      <a href="/gallery/"
-         class="{% if '/gallery/' in request.path %}active{% endif %}">
-        Галерея
-      </a>
-
-      {% if user.is_authenticated %}
-        <a href="{% url 'gallery:create' %}"
-           class="{% if '/gallery/create' in request.path %}active{% endif %}">
-          Загрузить
-        </a>
-      {% endif %}
-
-      <a href="/program/"
-         class="{% if '/program/' in request.path %}active{% endif %}">
-        Программа
-      </a>
-
-      {% if user.is_authenticated %}
-
-        <a href="/registrations/my/"
-           class="{% if '/registrations/' in request.path %}active{% endif %}">
-           Мои записи
-        </a>
-
-        <span class="muted" style="margin-left:6px;">
-          👋 {{ user.username }}
-        </span>
-
-        <form action="/accounts/logout/" method="post">
-          {% csrf_token %}
-          <button type="submit">Выйти</button>
-        </form>
-
-      {% else %}
-        <a href="/accounts/login/">Войти</a>
-        <a href="/accounts/signup/">Регистрация</a>
-      {% endif %}
-
-      {% if user.is_staff %}
-        <a href="/admin/">Admin</a>
-      {% endif %}
-
-    </nav>
-
-  </div>
-</header>
-
-<main class="container">
-
-  {# ===== Messages / уведомления ===== #}
-  {% if messages %}
-    <div style="max-width:900px; margin:16px auto 0 auto;">
-      {% for message in messages %}
-        <div
-          style="
-            padding:12px 14px;
-            margin-bottom:10px;
-            border-radius:14px;
-            font-weight:600;
-            border:1px solid rgba(15,23,42,.12);
-            background: rgba(255,255,255,.7);
-          "
-          {% if message.tags == 'success' %}
-            style="
-              padding:12px 14px;
-              margin-bottom:10px;
-              border-radius:14px;
-              font-weight:600;
-              border:1px solid rgba(16,185,129,.35);
-              background: rgba(16,185,129,.12);
-            "
-          {% elif message.tags == 'error' %}
-            style="
-              padding:12px 14px;
-              margin-bottom:10px;
-              border-radius:14px;
-              font-weight:600;
-              border:1px solid rgba(239,68,68,.35);
-              background: rgba(239,68,68,.12);
-            "
-          {% elif message.tags == 'warning' %}
-            style="
-              padding:12px 14px;
-              margin-bottom:10px;
-              border-radius:14px;
-              font-weight:600;
-              border:1px solid rgba(245,158,11,.35);
-              background: rgba(245,158,11,.12);
-            "
-          {% endif %}
-        >
-          {{ message }}
+<body id="body" {% if request.path != '/' %}class="loaded"{% endif %}>
+    <!-- ШАПКА с динамическими ссылками -->
+    <header class="header {% if request.path != '/' %}visible{% endif %}" id="mainHeader">
+        <div class="container-fluid h-100">
+            <div class="row align-items-center h-100">
+                <div class="col"></div>
+                <div class="col d-flex flex-column align-items-end left-menu">
+                    <a href="/" class="py-1 {% if request.path == '/' %}active{% endif %}">главная</a>
+                    <a href="/gen/stage/" class="py-1 {% if '/gen/' in request.path %}active{% endif %}">generative</a>
+                    <a href="/gallery/" class="py-1 {% if '/gallery/' in request.path %}active{% endif %}">галерея</a>
+                    <a href="/program/" class="py-1 {% if '/program/' in request.path %}active{% endif %}">программа</a>
+                </div>
+                <div class="col"></div>
+                <div class="col text-center">
+                    <a href="/" class="logo-vertical" style="text-decoration: none; color: inherit;">
+                        <span>digital</span>
+                        <span>art</span>
+                    </a>
+                </div>
+                <div class="col"></div>
+                <div class="col d-flex flex-column align-items-start right-menu">
+                    {% if user.is_authenticated %}
+                        <!-- Выпадающее меню для авторизованного пользователя -->
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle py-1" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: inherit; text-decoration: none; padding:0; border:none; background:none; font-family: 'Buse', sans-serif; font-size: 24px;">
+                                👋 {{ user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                {% if user.is_staff %}
+                                    <li><a class="dropdown-item" href="/admin/">Admin</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'gallery:create' %}">Загрузить</a></li>
+                                <li><a class="dropdown-item" href="/registrations/my/">Мои записи</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="/accounts/logout/" method="post" style="margin:0;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item" style="background:none; border:none; width:100%; text-align:left;">Выйти</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="/accounts/login/" class="py-1">войти</a>
+                        <a href="/accounts/signup/" class="py-1">регистрация</a>
+                    {% endif %}
+                </div>
+                <div class="col"></div>
+            </div>
         </div>
-      {% endfor %}
+    </header>
+
+    <!-- БЛОК ДЛЯ СООБЩЕНИЙ -->
+    {% if messages %}
+    <div style="position: relative; z-index: 100; max-width: 600px; margin: 20px auto;">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
     </div>
-  {% endif %}
-  {# ===== конец messages ===== #}
+    {% endif %}
 
-  {% block content %}{% endblock %}
-</main>
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
 
-<footer class="footer">
-  <div class="container muted">
-    © Digital Art Festival • {% now "Y" %}
-  </div>
-</footer>
+    <!-- Общие скрипты -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function() {
+            // Логика скрытия шапки
+            let lastScrollTop = 0;
+            const headerElement = document.querySelector('.header');
+
+            window.addEventListener('scroll', function() {
+                if (!headerElement.classList.contains('visible')) return;
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop) {
+                    headerElement.classList.add('hidden');
+                } else {
+                    headerElement.classList.remove('hidden');
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            });
+
+            // Эффект пикселей при клике
+            document.addEventListener('click', function(e) {
+                for (let i = 0; i < 10; i++) {
+                    const pixel = document.createElement('div');
+                    pixel.className = 'pixel';
+                    pixel.style.left = (e.clientX + (Math.random() - 0.5) * 40) + 'px';
+                    pixel.style.top = (e.clientY + (Math.random() - 0.5) * 40) + 'px';
+                    pixel.style.background = i % 2 === 0 ? '#15173D' : '#982598';
+                    document.body.appendChild(pixel);
+                    setTimeout(() => {
+                    typeText(titleEl, cursorTitle, titleText, 50, () => {
+                        typeText(subEl, cursorSub, subText, 40, () => {
+                            header.classList.add('visible');
+                            footer.classList.add('visible');
+                            document.body.classList.add('loaded'); // разблокируем скролл
+                            initReveal();
+                        });
+                    });
+                }, 2000);
+                }
+            });
+            // Эффект пикселей при клике (общий)
+document.addEventListener('click', function(e) {
+    // Проверяем, кликнули ли по кнопке лайка (или форме лайка)
+    const isLike = e.target.closest('form[action*="like"]') || e.target.closest('button[type="submit"]') && e.target.closest('form');
+
+    // Определяем цвет и символ
+    let color, char;
+    if (isLike) {
+        // Для лайков – красные сердечки
+        color = '#ff3366'; // ярко-красный
+        char = '❤️';
+    } else {
+        // Для остальных кликов – пиксели наших цветов
+        color = i % 2 === 0 ? '#15173D' : '#982598';
+        char = ''; // без символа, просто квадратик
+    }
+
+    // Генерируем частицы
+    for (let i = 0; i < (isLike ? 8 : 10); i++) {
+        const pixel = document.createElement('div');
+        pixel.className = 'pixel';
+        if (char) {
+            pixel.textContent = char;
+            pixel.style.fontSize = '16px';
+            pixel.style.background = 'transparent';
+            pixel.style.color = color;
+            pixel.style.width = 'auto';
+            pixel.style.height = 'auto';
+        } else {
+            pixel.style.background = color;
+            pixel.style.width = '4px';
+            pixel.style.height = '4px';
+        }
+        pixel.style.left = (e.clientX + (Math.random() - 0.5) * 60) + 'px';
+        pixel.style.top = (e.clientY + (Math.random() - 0.5) * 60) + 'px';
+        document.body.appendChild(pixel);
+        setTimeout(() => pixel.remove(), 800);
+    }
+});
+
+            // Анимация открытия (page-reveal) — только на главной
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+                document.querySelector('.header').classList.add('visible');
+            }, 2000);
+        })();
+    </script>
+
+    <!-- Блок для дополнительных скриптов (на каждой странице) -->
+    {% block extra_scripts %}{% endblock %}
 
 </body>
 </html>
