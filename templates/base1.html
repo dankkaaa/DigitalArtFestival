@@ -1,401 +1,539 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Digital Art Festival{% endblock %}</title>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{%static 'css/style.css' %}">
-</head>
-<body id="body">
-
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{%static 'css/style.css' %}" />
+  </head>
+  <body id="body">
     <!-- ЭФФЕКТ ОТКРЫТИЯ (без изменений) -->
     <div class="page-reveal">
-        <div class="page-reveal-left">digital</div>
-        <div class="page-reveal-right">art</div>
+      <div class="page-reveal-left">digital</div>
+      <div class="page-reveal-right">art</div>
     </div>
 
     <!-- ШАПКА с динамическими ссылками -->
     <header class="header" id="mainHeader">
-        <div class="container-fluid h-100">
-            <div class="row align-items-center h-100">
-                <div class="col"></div>
-                <div class="col d-flex flex-column align-items-end left-menu">
-                    <a href="/" class="py-1 {% if request.path == '/' %}active{% endif %}">главная</a>
-                    <a href="/gen/stage/" class="py-1 {% if '/gen/' in request.path %}active{% endif %}">generative</a>
-                    <a href="/gallery/" class="py-1 {% if '/gallery/' in request.path %}active{% endif %}">галерея</a>
-                    <a href="/program/" class="py-1 {% if '/program/' in request.path %}active{% endif %}">программа</a>
-                </div>
-                <div class="col"></div>
-                <div class="col text-center">
-                    <a href="/" class="logo-vertical" style="text-decoration: none; color: inherit;">
-                        <span>digital</span>
-                        <span>art</span>
-                    </a>
-                </div>
-                <div class="col"></div>
-                <div class="col d-flex flex-column align-items-start right-menu">
-                    {% if user.is_authenticated %}
-                        <span class="py-1 muted">👋 {{ user.username }}</span>
-                        {% if user.is_staff %}
-                            <a href="/admin/" class="py-1 {% if '/admin/' in request.path %}active{% endif %}">Admin</a>
-                        {% endif %}
-                        <a href="{% url 'gallery:create' %}" class="py-1 {% if '/gallery/create' in request.path %}active{% endif %}">Загрузить</a>
-                        <a href="/registrations/my/" class="py-1 {% if '/registrations/' in request.path %}active{% endif %}">Мои записи</a>
-                        <form action="/accounts/logout/" method="post" style="display: inline; width: 100%;">
-                            {% csrf_token %}
-                            <button type="submit" class="py-1" style="background:none; border:none; color:inherit; cursor:pointer; padding:0; text-align:left; width:100%;">Выйти</button>
-                        </form>
-                    {% else %}
-                        <a href="/accounts/login/" class="py-1">войти</a>
-                        <a href="/accounts/signup/" class="py-1">регистрация</a>
-                    {% endif %}
-                </div>
-                <div class="col"></div>
-            </div>
+      <div class="container-fluid h-100">
+        <div class="row align-items-center h-100">
+          <div class="col"></div>
+          <div class="col d-flex flex-column align-items-end left-menu">
+            <a
+              href="/"
+              class="py-1 {% if request.path == '/' %}active{% endif %}"
+              >главная</a
+            >
+            <a
+              href="/gen/stage/"
+              class="py-1 {% if '/gen/' in request.path %}active{% endif %}"
+              >generative</a
+            >
+            <a
+              href="/gallery/"
+              class="py-1 {% if '/gallery/' in request.path %}active{% endif %}"
+              >галерея</a
+            >
+            <a
+              href="/program/"
+              class="py-1 {% if '/program/' in request.path %}active{% endif %}"
+              >программа</a
+            >
+          </div>
+          <div class="col"></div>
+          <div class="col text-center">
+            <a
+              href="/"
+              class="logo-vertical"
+              style="text-decoration: none; color: inherit"
+            >
+              <span>digital</span>
+              <span>art</span>
+            </a>
+          </div>
+          <div class="col"></div>
+          <div class="col d-flex flex-column align-items-start right-menu">
+            {% if user.is_authenticated %}
+            <span class="py-1 muted">👋 {{ user.username }}</span>
+            {% if user.is_staff %}
+            <a
+              href="/admin/"
+              class="py-1 {% if '/admin/' in request.path %}active{% endif %}"
+              >Admin</a
+            >
+            {% endif %}
+            <a
+              href="{% url 'gallery:create' %}"
+              class="py-1 {% if '/gallery/create' in request.path %}active{% endif %}"
+              >Загрузить</a
+            >
+            <a
+              href="/registrations/my/"
+              class="py-1 {% if '/registrations/' in request.path %}active{% endif %}"
+              >Мои записи</a
+            >
+            <form
+              action="/accounts/logout/"
+              method="post"
+              style="display: inline; width: 100%"
+            >
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="py-1"
+                style="
+                  background: none;
+                  border: none;
+                  color: inherit;
+                  cursor: pointer;
+                  padding: 0;
+                  text-align: left;
+                  width: 100%;
+                "
+              >
+                Выйти
+              </button>
+            </form>
+            {% else %}
+            <a href="/accounts/login/" class="py-1">войти</a>
+            <a href="/accounts/signup/" class="py-1">регистрация</a>
+            {% endif %}
+          </div>
+          <div class="col"></div>
         </div>
+      </div>
     </header>
 
     <!-- БЛОК ДЛЯ СООБЩЕНИЙ (messages) как в первом шаблоне, но в стиле Bootstrap -->
     {% if messages %}
-    <div style="position: relative; z-index: 100; max-width: 600px; margin: 20px auto;">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
+    <div
+      style="
+        position: relative;
+        z-index: 100;
+        max-width: 600px;
+        margin: 20px auto;
+      "
+    >
+      {% for message in messages %}
+      <div
+        class="alert alert-{{ message.tags }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endfor %}
     </div>
     {% endif %}
 
     <!-- ПЕРВЫЙ ЭКРАН (без изменений, кроме ссылок) -->
     <div class="first-screen">
-        <div class="main-content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="typewriter-container">
-                            <span class="typewriter-text" id="typingTitle"></span>
-                            <span class="typewriter-cursor" id="cursorTitle" style="display: none;"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="typewriter-container">
-                            <span class="typewriter-text typewriter-sub" id="typingSub"></span>
-                            <span class="typewriter-cursor" id="cursorSub" style="display: none;"></span>
-                        </div>
-                    </div>
-                </div>
+      <div class="main-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="typewriter-container">
+                <span class="typewriter-text" id="typingTitle"></span>
+                <span
+                  class="typewriter-cursor"
+                  id="cursorTitle"
+                  style="display: none"
+                ></span>
+              </div>
             </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="typewriter-container">
+                <span
+                  class="typewriter-text typewriter-sub"
+                  id="typingSub"
+                ></span>
+                <span
+                  class="typewriter-cursor"
+                  id="cursorSub"
+                  style="display: none"
+                ></span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="container-fluid footer-buttons" id="footerButtons">
-            <div class="row align-items-center">
-                <div class="col"></div>
-                <div class="col"></div>
-                <div class="col d-flex justify-content-center">
-                    <a href="/gen/stage/" class="btn-square">открыть generative stage</a>
-                </div>
-                <div class="col"></div>
-                <div class="col d-flex justify-content-center">
-                    <a href="/program/" class="btn-square">смотреть программу</a>
-                </div>
-                <div class="col"></div>
-                <div class="col"></div>
-            </div>
+      <div class="container-fluid footer-buttons" id="footerButtons">
+        <div class="row align-items-center">
+          <div class="col"></div>
+          <div class="col"></div>
+          <div class="col d-flex justify-content-center">
+            <a href="/gen/stage/" class="btn-square"
+              >открыть generative stage</a
+            >
+          </div>
+          <div class="col"></div>
+          <div class="col d-flex justify-content-center">
+            <a href="/program/" class="btn-square">смотреть программу</a>
+          </div>
+          <div class="col"></div>
+          <div class="col"></div>
         </div>
+      </div>
     </div>
 
     <!-- ВТОРОЙ ЭКРАН (ссылки заменены) -->
     <div class="second-screen">
-        <div class="top-blocks">
-            <div class="block-item reveal">
-                <div class="block-title">Витрина работ</div>
-                <div class="block-desc">Лучшие визуальные эксперименты: generative, AI, motion, installations.</div>
-                <a href="/gallery/" class="block-button">Открыть галерею →</a>
-            </div>
-            <div class="block-item reveal">
-                <div class="block-title">События и программа</div>
-                <div class="block-desc">Лекции, перформансы, выставки и кураторские показы. Записывайся онлайн.</div>
-                <a href="/program/" class="block-button">Перейти в программу →</a>
-            </div>
-            <div class="block-item reveal">
-                <div class="block-title">Участие</div>
-                <div class="block-desc">Регистрируйся, сохраняй события в “Мои записи” и управляй участием.</div>
-                <a href="/accounts/signup/" class="block-button">Создать аккаунт →</a>
-            </div>
+      <div class="top-blocks">
+        <div class="block-item reveal">
+          <div class="block-title">Витрина работ</div>
+          <div class="block-desc">
+            Лучшие визуальные эксперименты: generative, AI, motion,
+            installations.
+          </div>
+          <a href="/gallery/" class="block-button">Открыть галерею →</a>
         </div>
+        <div class="block-item reveal">
+          <div class="block-title">События и программа</div>
+          <div class="block-desc">
+            Лекции, перформансы, выставки и кураторские показы. Записывайся
+            онлайн.
+          </div>
+          <a href="/program/" class="block-button">Перейти в программу →</a>
+        </div>
+        <div class="block-item reveal">
+          <div class="block-title">Участие</div>
+          <div class="block-desc">
+            Регистрируйся, сохраняй события в “Мои записи” и управляй участием.
+          </div>
+          <a href="/accounts/signup/" class="block-button">Создать аккаунт →</a>
+        </div>
+      </div>
 
-        <div class="bottom-blocks">
-            <div class="about-block reveal">
-                <div class="about-title">О фестивале</div>
-                <div class="about-text">
-                    Digital Art Festival объединяет цифровых художников, кураторов и зрителей. Здесь встречаются генеративные практики, интерактивные инсталляции и новые форматы выставок.
-                    <br><br>
-                    Наша идея — не просто показать работы, а построить платформу, где искусство “живёт”: развивается, обсуждается и становится частью городской среды.
-                </div>
-            </div>
-            <div class="stats-block reveal">
-                <div class="about-title">В цифрах</div>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-number blue">2026</div>
-                        <div class="stat-label">Запуск платформы</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number red">5+</div>
-                        <div class="stat-label">направлений искусства</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number blue">Live</div>
-                        <div class="stat-label">интерактив и стримы</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number red">2030</div>
-                        <div class="stat-label">гибридный формат</div>
-                    </div>
-                </div>
-            </div>
+      <div class="bottom-blocks">
+        <div class="about-block reveal">
+          <div class="about-title">О фестивале</div>
+          <div class="about-text">
+            Digital Art Festival объединяет цифровых художников, кураторов и
+            зрителей. Здесь встречаются генеративные практики, интерактивные
+            инсталляции и новые форматы выставок.
+            <br /><br />
+            Наша идея — не просто показать работы, а построить платформу, где
+            искусство “живёт”: развивается, обсуждается и становится частью
+            городской среды.
+          </div>
         </div>
+        <div class="stats-block reveal">
+          <div class="about-title">В цифрах</div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-number blue">2026</div>
+              <div class="stat-label">Запуск платформы</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number red">5+</div>
+              <div class="stat-label">направлений искусства</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number blue">Live</div>
+              <div class="stat-label">интерактив и стримы</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number red">2030</div>
+              <div class="stat-label">гибридный формат</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ТРЕТИЙ БЛОК: ROADMAP (ссылки заменены) -->
     <div class="roadmap-section" id="roadmap">
-        <div class="roadmap-container">
-            <div class="roadmap-content">
-                <div class="roadmap-header reveal">
-                    <h1>БУДУЩЕЕ ФЕСТИВАЛЯ</h1>
-                    <h2>Дорожная карта до 2030</h2>
-                    <div class="roadmap-years" id="roadmapYears">
-                        <span class="year-link" data-year="2026">2026</span> | 
-                        <span class="year-link" data-year="2027">2027</span> | 
-                        <span class="year-link" data-year="2028">2028</span> | 
-                        <span class="year-link" data-year="2029">2029</span> | 
-                        <span class="year-link" data-year="2030">2030</span>
-                    </div>
-                </div>
-
-                <!-- 2026 -->
-                <div class="roadmap-year-block reveal" data-year="2026" id="year-2026">
-                    <div class="year-title">2026</div>
-                    <div class="year-subtitle">Запуск платформы</div>
-                    <div class="year-description">Генеративная сцена, программа событий, первые коллаборации.</div>
-                    <ul class="year-features">
-                        <li>Профили участников</li>
-                        <li>Запись на события</li>
-                        <li>Онлайн-галерея</li>
-                    </ul>
-                </div>
-
-                <!-- 2027 -->
-                <div class="roadmap-year-block reveal" data-year="2027" id="year-2027">
-                    <div class="year-title">2027</div>
-                    <div class="year-subtitle">Интерактив и сообщество</div>
-                    <div class="year-description">Социальные механики, рейтинги работ, живые обсуждения.</div>
-                    <ul class="year-features">
-                        <li>Лайвы и стримы</li>
-                        <li>Кураторские подборки</li>
-                        <li>Комьюнити-ивенты</li>
-                    </ul>
-                </div>
-
-                <!-- 2028 -->
-                <div class="roadmap-year-block reveal" data-year="2028" id="year-2028">
-                    <div class="year-title">2028</div>
-                    <div class="year-subtitle">AI-режиссура и экспозиции</div>
-                    <div class="year-description">Сценарии выставок, интерактивные маршруты, персональные рекомендации.</div>
-                    <ul class="year-features">
-                        <li>AI-куратор</li>
-                        <li>Аудиогид по работам</li>
-                        <li>Карта инсталляций</li>
-                    </ul>
-                </div>
-
-                <!-- 2029 -->
-                <div class="roadmap-year-block reveal" data-year="2029" id="year-2029">
-                    <div class="year-title">2029</div>
-                    <div class="year-subtitle">Города и партнёры</div>
-                    <div class="year-description">Поп-ап выставки, фестивальные недели, партнёрские площадки.</div>
-                    <ul class="year-features">
-                        <li>Выездные показы</li>
-                        <li>Коллабы с музеями</li>
-                        <li>Гранты и резиденции</li>
-                    </ul>
-                </div>
-
-                <!-- 2030 финал -->
-                <div class="roadmap-year-block reveal" data-year="2030" id="year-2030">
-                    <div class="year-title">2030</div>
-                    <div class="year-subtitle">Гибридный фестиваль будущего</div>
-                    <div class="year-description">AR/VR маршруты, метавыставки, “живые” генеративные сцены в реальном времени.</div>
-                    <ul class="year-features">
-                        <li>AR-инсталляции</li>
-                        <li>VR-экспозиции</li>
-                        <li>Глобальные трансляции</li>
-                    </ul>
-                </div>
-
-                <div class="final-block reveal">
-                    <div class="final-title">Готов стать частью фестиваля?</div>
-                    <div class="final-subtitle">Выбирай события, сохраняй в “Мои записи” и следи за обновлениями программы.</div>
-                    <div class="final-buttons">
-                        <a href="/program/" class="final-button">Открыть программу →</a>
-                        <a href="/gallery/" class="final-button">Смотреть галерею →</a>
-                    </div>
-                    <div class="footer-copyright">© Digital Art Festival • {% now "Y" %}</div>
-                </div>
+      <div class="roadmap-container">
+        <div class="roadmap-content">
+          <div class="roadmap-header reveal">
+            <h1>БУДУЩЕЕ ФЕСТИВАЛЯ</h1>
+            <h2>Дорожная карта до 2030</h2>
+            <div class="roadmap-years" id="roadmapYears">
+              <span class="year-link" data-year="2026">2026</span> |
+              <span class="year-link" data-year="2027">2027</span> |
+              <span class="year-link" data-year="2028">2028</span> |
+              <span class="year-link" data-year="2029">2029</span> |
+              <span class="year-link" data-year="2030">2030</span>
             </div>
+          </div>
 
-            <!-- Вертикальный прогресс-бар (без изменений) -->
-            <div class="roadmap-progress">
-                <div class="progress-fill" id="progressFill"></div>
-                <div class="progress-years" id="progressYears">
-                    <span data-year="2026">2026</span>
-                    <span data-year="2027">2027</span>
-                    <span data-year="2028">2028</span>
-                    <span data-year="2029">2029</span>
-                    <span data-year="2030">2030</span>
-                </div>
+          <!-- 2026 -->
+          <div
+            class="roadmap-year-block reveal"
+            data-year="2026"
+            id="year-2026"
+          >
+            <div class="year-title">2026</div>
+            <div class="year-subtitle">Запуск платформы</div>
+            <div class="year-description">
+              Генеративная сцена, программа событий, первые коллаборации.
             </div>
+            <ul class="year-features">
+              <li>Профили участников</li>
+              <li>Запись на события</li>
+              <li>Онлайн-галерея</li>
+            </ul>
+          </div>
+
+          <!-- 2027 -->
+          <div
+            class="roadmap-year-block reveal"
+            data-year="2027"
+            id="year-2027"
+          >
+            <div class="year-title">2027</div>
+            <div class="year-subtitle">Интерактив и сообщество</div>
+            <div class="year-description">
+              Социальные механики, рейтинги работ, живые обсуждения.
+            </div>
+            <ul class="year-features">
+              <li>Лайвы и стримы</li>
+              <li>Кураторские подборки</li>
+              <li>Комьюнити-ивенты</li>
+            </ul>
+          </div>
+
+          <!-- 2028 -->
+          <div
+            class="roadmap-year-block reveal"
+            data-year="2028"
+            id="year-2028"
+          >
+            <div class="year-title">2028</div>
+            <div class="year-subtitle">AI-режиссура и экспозиции</div>
+            <div class="year-description">
+              Сценарии выставок, интерактивные маршруты, персональные
+              рекомендации.
+            </div>
+            <ul class="year-features">
+              <li>AI-куратор</li>
+              <li>Аудиогид по работам</li>
+              <li>Карта инсталляций</li>
+            </ul>
+          </div>
+
+          <!-- 2029 -->
+          <div
+            class="roadmap-year-block reveal"
+            data-year="2029"
+            id="year-2029"
+          >
+            <div class="year-title">2029</div>
+            <div class="year-subtitle">Города и партнёры</div>
+            <div class="year-description">
+              Поп-ап выставки, фестивальные недели, партнёрские площадки.
+            </div>
+            <ul class="year-features">
+              <li>Выездные показы</li>
+              <li>Коллабы с музеями</li>
+              <li>Гранты и резиденции</li>
+            </ul>
+          </div>
+
+          <!-- 2030 финал -->
+          <div
+            class="roadmap-year-block reveal"
+            data-year="2030"
+            id="year-2030"
+          >
+            <div class="year-title">2030</div>
+            <div class="year-subtitle">Гибридный фестиваль будущего</div>
+            <div class="year-description">
+              AR/VR маршруты, метавыставки, “живые” генеративные сцены в
+              реальном времени.
+            </div>
+            <ul class="year-features">
+              <li>AR-инсталляции</li>
+              <li>VR-экспозиции</li>
+              <li>Глобальные трансляции</li>
+            </ul>
+          </div>
+
+          <div class="final-block reveal">
+            <div class="final-title">Готов стать частью фестиваля?</div>
+            <div class="final-subtitle">
+              Выбирай события, сохраняй в “Мои записи” и следи за обновлениями
+              программы.
+            </div>
+            <div class="final-buttons">
+              <a href="/program/" class="final-button">Открыть программу →</a>
+              <a href="/gallery/" class="final-button">Смотреть галерею →</a>
+            </div>
+            <div class="footer-copyright">
+              © Digital Art Festival • {% now "Y" %}
+            </div>
+          </div>
         </div>
+
+        <!-- Вертикальный прогресс-бар (без изменений) -->
+        <div class="roadmap-progress">
+          <div class="progress-fill" id="progressFill"></div>
+          <div class="progress-years" id="progressYears">
+            <span data-year="2026">2026</span>
+            <span data-year="2027">2027</span>
+            <span data-year="2028">2028</span>
+            <span data-year="2029">2029</span>
+            <span data-year="2030">2030</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Скрипты (без изменений, кроме возможной адаптации) -->
     <script>
-        (function() {
-            const body = document.getElementById('body');
-            const titleText = "digital art festival";
-            const subText = "Фестиваль цифрового искусства";
+      (function () {
+        const body = document.getElementById("body");
+        const titleText = "digital art festival";
+        const subText = "Фестиваль цифрового искусства";
 
-            const titleEl = document.getElementById('typingTitle');
-            const subEl = document.getElementById('typingSub');
-            const cursorTitle = document.getElementById('cursorTitle');
-            const cursorSub = document.getElementById('cursorSub');
-            const header = document.getElementById('mainHeader');
-            const footer = document.getElementById('footerButtons');
+        const titleEl = document.getElementById("typingTitle");
+        const subEl = document.getElementById("typingSub");
+        const cursorTitle = document.getElementById("cursorTitle");
+        const cursorSub = document.getElementById("cursorSub");
+        const header = document.getElementById("mainHeader");
+        const footer = document.getElementById("footerButtons");
 
-            function typeText(element, cursor, text, speed, callback) {
-                let i = 0;
-                element.textContent = '';
-                cursor.style.display = 'inline-block';
+        function typeText(element, cursor, text, speed, callback) {
+          let i = 0;
+          element.textContent = "";
+          cursor.style.display = "inline-block";
 
-                function type() {
-                    if (i < text.length) {
-                        element.textContent += text.charAt(i);
-                        i++;
-                        setTimeout(type, speed);
-                    } else {
-                        cursor.style.display = 'none';
-                        if (callback) callback();
-                    }
-                }
-                type();
+          function type() {
+            if (i < text.length) {
+              element.textContent += text.charAt(i);
+              i++;
+              setTimeout(type, speed);
+            } else {
+              cursor.style.display = "none";
+              if (callback) callback();
             }
+          }
+          type();
+        }
 
-            // Анимация открытия 2 секунды, печатаем быстрее
-            setTimeout(() => {
-                typeText(titleEl, cursorTitle, titleText, 50, () => {
-                    typeText(subEl, cursorSub, subText, 40, () => {
-                        header.classList.add('visible');
-                        footer.classList.add('visible');
-                        body.classList.add('loaded');
-                        // Запускаем Intersection Observer после загрузки
-                        initReveal();
-                    });
-                });
-            }, 2000);
-
-            // Логика скрытия шапки
-            let lastScrollTop = 0;
-            const headerElement = document.querySelector('.header');
-
-            window.addEventListener('scroll', function() {
-                if (!headerElement.classList.contains('visible')) return;
-
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-                if (scrollTop > lastScrollTop) {
-                    headerElement.classList.add('hidden');
-                } else {
-                    headerElement.classList.remove('hidden');
-                }
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        // Анимация открытия 2 секунды, печатаем быстрее
+        setTimeout(() => {
+          typeText(titleEl, cursorTitle, titleText, 50, () => {
+            typeText(subEl, cursorSub, subText, 40, () => {
+              header.classList.add("visible");
+              footer.classList.add("visible");
+              body.classList.add("loaded");
+              // Запускаем Intersection Observer после загрузки
+              initReveal();
             });
+          });
+        }, 2000);
 
-            // Прогресс-бар
-            const roadmap = document.getElementById('roadmap');
-            const progressFill = document.getElementById('progressFill');
+        // Логика скрытия шапки
+        let lastScrollTop = 0;
+        const headerElement = document.querySelector(".header");
 
-            function updateProgress() {
-                if (!roadmap) return;
-                const rect = roadmap.getBoundingClientRect();
-                const winHeight = window.innerHeight;
-                const roadmapTop = rect.top;
-                const roadmapHeight = rect.height;
+        window.addEventListener("scroll", function () {
+          if (!headerElement.classList.contains("visible")) return;
 
-                let progress = 0;
-                if (roadmapTop < winHeight && roadmapTop + roadmapHeight > 0) {
-                    const scrolled = -roadmapTop;
-                    progress = scrolled / (roadmapHeight - winHeight);
-                    progress = Math.max(0, Math.min(1, progress));
-                } else if (roadmapTop + roadmapHeight <= 0) {
-                    progress = 1;
-                }
+          let scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
 
-                progressFill.style.height = (progress * 100) + '%';
+          if (scrollTop > lastScrollTop) {
+            headerElement.classList.add("hidden");
+          } else {
+            headerElement.classList.remove("hidden");
+          }
+          lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+        // Прогресс-бар
+        const roadmap = document.getElementById("roadmap");
+        const progressFill = document.getElementById("progressFill");
+
+        function updateProgress() {
+          if (!roadmap) return;
+          const rect = roadmap.getBoundingClientRect();
+          const winHeight = window.innerHeight;
+          const roadmapTop = rect.top;
+          const roadmapHeight = rect.height;
+
+          let progress = 0;
+          if (roadmapTop < winHeight && roadmapTop + roadmapHeight > 0) {
+            const scrolled = -roadmapTop;
+            progress = scrolled / (roadmapHeight - winHeight);
+            progress = Math.max(0, Math.min(1, progress));
+          } else if (roadmapTop + roadmapHeight <= 0) {
+            progress = 1;
+          }
+
+          progressFill.style.height = progress * 100 + "%";
+        }
+
+        window.addEventListener("scroll", updateProgress);
+        window.addEventListener("resize", updateProgress);
+        setTimeout(updateProgress, 200);
+
+        // Клик по годам
+        const yearLinks = document.querySelectorAll(
+          ".year-link, .progress-years span",
+        );
+        yearLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            const year = e.target.getAttribute("data-year");
+            if (year) {
+              const targetBlock = document.getElementById(`year-${year}`);
+              if (targetBlock) {
+                const y =
+                  targetBlock.getBoundingClientRect().top +
+                  window.scrollY -
+                  130;
+                window.scrollTo({ top: y, behavior: "smooth" });
+              }
             }
+          });
+        });
 
-            window.addEventListener('scroll', updateProgress);
-            window.addEventListener('resize', updateProgress);
-            setTimeout(updateProgress, 200);
-
-            // Клик по годам
-            const yearLinks = document.querySelectorAll('.year-link, .progress-years span');
-            yearLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    const year = e.target.getAttribute('data-year');
-                    if (year) {
-                        const targetBlock = document.getElementById(`year-${year}`);
-                        if (targetBlock) {
-                            const y = targetBlock.getBoundingClientRect().top + window.scrollY - 130;
-                            window.scrollTo({ top: y, behavior: 'smooth' });
-                        }
-                    }
-                });
-            });
-
-            // Intersection Observer для анимации появления
-            function initReveal() {
-                const reveals = document.querySelectorAll('.reveal');
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('revealed');
-                        }
-                    });
-                }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-                reveals.forEach(r => observer.observe(r));
-            }
-
-            // Эффект пикселей при клике
-            document.addEventListener('click', function(e) {
-                for (let i = 0; i < 10; i++) {
-                    const pixel = document.createElement('div');
-                    pixel.className = 'pixel';
-                    pixel.style.left = (e.clientX + (Math.random() - 0.5) * 40) + 'px';
-                    pixel.style.top = (e.clientY + (Math.random() - 0.5) * 40) + 'px';
-                    pixel.style.background = i % 2 === 0 ? '#15173D' : '#982598';
-                    document.body.appendChild(pixel);
-                    setTimeout(() => pixel.remove(), 800);
+        // Intersection Observer для анимации появления
+        function initReveal() {
+          const reveals = document.querySelectorAll(".reveal");
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("revealed");
                 }
-            });
-        })();
+              });
+            },
+            { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
+          );
+          reveals.forEach((r) => observer.observe(r));
+        }
+
+        // Эффект пикселей при клике
+        document.addEventListener("click", function (e) {
+          for (let i = 0; i < 10; i++) {
+            const pixel = document.createElement("div");
+            pixel.className = "pixel";
+            pixel.style.left = e.clientX + (Math.random() - 0.5) * 40 + "px";
+            pixel.style.top = e.clientY + (Math.random() - 0.5) * 40 + "px";
+            pixel.style.background = i % 2 === 0 ? "#15173D" : "#982598";
+            document.body.appendChild(pixel);
+            setTimeout(() => pixel.remove(), 800);
+          }
+        });
+      })();
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  </body>
 </html>

@@ -20,10 +20,10 @@ body{background:#030308;overflow:hidden;font-family:monospace;touch-action:none;
   box-shadow:0 4px 40px rgba(60,80,255,0.18);
   max-width:calc(100vw - 12px);
 }
-#ui select{background:#0e0e2a;color:#aaccff;border:1px solid #336;border-radius:8px;padding:6px 8px;font-size:12px;cursor:pointer;max-width:200px;}
-#ui input[type=text]{background:#0e0e2a;color:#eef;border:1px solid #336;border-radius:8px;padding:6px 10px;font-size:12px;width:130px;outline:none;}
-#generate-btn{padding:6px 16px;background:linear-gradient(135deg,#6644ff,#3399ff);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:12px;white-space:nowrap;}
-#seed-display{color:#556;font-size:10px;white-space:nowrap;display:none;}
+#ui select{background:#0e0e2a;color:#aaccff;border:1px solid #336;border-radius:8px;padding:8px 10px;font-size:15px;cursor:pointer;max-width:280px;}
+#ui input[type=text]{background:#0e0e2a;color:#eef;border:1px solid #336;border-radius:8px;padding:8px 12px;font-size:15px;width:170px;outline:none;}
+#generate-btn{padding:8px 20px;background:linear-gradient(135deg,#6644ff,#3399ff);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:15px;white-space:nowrap;}
+#seed-display{color:#556;font-size:12px;white-space:nowrap;display:none;}
 #seed-value{color:#88aaff;}
 @media(min-width:600px){
   #ui select{max-width:240px;}
@@ -36,7 +36,7 @@ body{background:#030308;overflow:hidden;font-family:monospace;touch-action:none;
   position:fixed;bottom:env(safe-area-inset-bottom,16px);right:12px;z-index:25;
   background:rgba(5,5,20,0.85);border:1px solid rgba(100,120,255,0.3);
   border-radius:10px;padding:7px 12px;display:flex;align-items:center;gap:7px;
-  color:#88aaff;font-size:11px;user-select:none;
+  color:#88aaff;font-size:14px;user-select:none;
 }
 #ambient-ctrl input[type=range]{accent-color:#6644ff;width:65px;cursor:pointer;}
 
@@ -44,7 +44,7 @@ body{background:#030308;overflow:hidden;font-family:monospace;touch-action:none;
   display:none;position:fixed;bottom:88px;left:50%;transform:translateX(-50%);
   background:rgba(0,0,0,0.88);border:1px solid #00ff88;border-radius:12px;
   padding:10px 18px;align-items:center;gap:10px;z-index:20;
-  color:#00ff88;font-size:13px;white-space:nowrap;
+  color:#00ff88;font-size:15px;white-space:nowrap;
 }
 #freq-slider{accent-color:#00ff88;width:120px;}
 #play-tone{padding:5px 14px;background:#00ff88;color:#000;border:none;border-radius:20px;cursor:pointer;font-weight:700;}
@@ -64,12 +64,12 @@ body{background:#030308;overflow:hidden;font-family:monospace;touch-action:none;
 #buggy-hud{
   display:none;position:fixed;top:140px;left:12px;z-index:25;
   background:rgba(0,0,0,0.75);border:1px solid #ff6633;border-radius:10px;
-  padding:8px 14px;color:#ff9955;font-size:12px;line-height:1.9;
+  padding:10px 16px;color:#ff9955;font-size:15px;line-height:2.0;
 }
 #click-hint{
   display:none;position:fixed;bottom:120px;left:50%;transform:translateX(-50%);
   pointer-events:none;z-index:15;color:rgba(136,238,255,0.75);
-  font-size:13px;text-align:center;background:rgba(0,0,0,0.4);
+  font-size:15px;text-align:center;background:rgba(0,0,0,0.4);
   padding:4px 14px;border-radius:20px;white-space:nowrap;
 }
 #mobile-dpad{
@@ -145,7 +145,7 @@ body{background:#030308;overflow:hidden;font-family:monospace;touch-action:none;
     <option value="1">⚡ Плазменный шар</option>
     <option value="2">🔥 Фрактальное пламя</option>
     <option value="3">🔷 Геометрический хаос</option>
-    <option value="4">🧬 Клеточная структура</option>
+    <option value="4">🫧 Желейный шар (тяни!)</option>
     <option value="5">🎤 Звуковой анализатор</option>
     <option value="6">🌳 Фрактальное дерево</option>
     <option value="7">🌀 Частицы-хамелеоны</option>
@@ -250,14 +250,15 @@ const ambBuilders={
     [f*0.5,f,f*2,f*3].forEach((freq,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();g.gain.value=0.07;o.type=i%2?'sine':'triangle';o.frequency.value=freq;const lfo=audioCtx.createOscillator(),lG=audioCtx.createGain();lfo.frequency.value=0.35+i*0.22;lG.gain.value=0.3;lfo.connect(lG);lG.connect(g.gain);lfo.start();nd.push(lfo);o.connect(g);g.connect(m);g.connect(rev);o.start();nd.push(o);});return nd;},
   // 5 audio analyzer — silent (uses mic)
   silent:()=>[],
-  // 6 tree — wind through leaves
-  wind:(f,m)=>{const nd=[];const rev=makeReverb(4,1.4);rev.connect(m);
+  // 6 tree — gentle forest whisper
+  wind:(f,m)=>{const nd=[];const rev=makeReverb(5,1.8);rev.connect(m);
+    // Very soft filtered noise — gentle breeze
     const bs=audioCtx.sampleRate*3,buf=audioCtx.createBuffer(2,bs,audioCtx.sampleRate);for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<bs;i++)d[i]=Math.random()*2-1;}
     const src=audioCtx.createBufferSource();src.buffer=buf;src.loop=true;
-    const filt=audioCtx.createBiquadFilter();filt.type='bandpass';filt.frequency.value=f;filt.Q.value=0.5;
-    const g=audioCtx.createGain();g.gain.value=0.6;src.connect(filt);filt.connect(g);g.connect(m);g.connect(rev);src.start();nd.push(src);
-    const lfo=audioCtx.createOscillator(),lG=audioCtx.createGain();lfo.frequency.value=0.15;lG.gain.value=f*0.4;lfo.connect(lG);lG.connect(filt.frequency);lfo.start();nd.push(lfo);
-    [f*0.5,f*2,f*4].forEach(freq=>{const o=audioCtx.createOscillator(),g2=audioCtx.createGain();o.type='sine';o.frequency.value=freq;g2.gain.value=0.12;o.connect(g2);g2.connect(m);o.start();nd.push(o);});return nd;},
+    const filt=audioCtx.createBiquadFilter();filt.type='lowpass';filt.frequency.value=120;filt.Q.value=0.2;
+    const g=audioCtx.createGain();g.gain.value=0.15;src.connect(filt);filt.connect(g);g.connect(m);g.connect(rev);src.start();nd.push(src);
+    // Soft sine pads — forest ambience
+    [65,98,131,196].forEach((freq,i)=>{const o=audioCtx.createOscillator(),g2=audioCtx.createGain();o.type='sine';o.frequency.value=freq;g2.gain.value=0.06;const lfo=audioCtx.createOscillator(),lG=audioCtx.createGain();lfo.frequency.value=0.03+i*0.015;lG.gain.value=0.03;lfo.connect(lG);lG.connect(g2.gain);lfo.start();nd.push(lfo);o.connect(g2);g2.connect(m);g2.connect(rev);o.start();nd.push(o);});return nd;},
   // 7 chameleon — morphing tones
   morph:(f,m)=>{const nd=[];const rev=makeReverb(2,2);rev.connect(m);
     [f,f*1.26,f*1.587,f*2,f*2.52].forEach((freq,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();g.gain.value=0.07;o.type='sine';o.frequency.value=freq;const lfo=audioCtx.createOscillator(),lG=audioCtx.createGain();lfo.frequency.value=0.12+i*0.09;lG.gain.value=0.28;lfo.connect(lG);lG.connect(g.gain);lfo.start();nd.push(lfo);o.connect(g);g.connect(m);g.connect(rev);o.start();nd.push(o);});return nd;},
@@ -279,13 +280,10 @@ const ambBuilders={
     const ng=audioCtx.createGain();ng.gain.value=0.55;src.connect(filt);filt.connect(ng);ng.connect(m);ng.connect(rev);src.start();nd.push(src);
     const lfo=audioCtx.createOscillator(),lG=audioCtx.createGain();lfo.frequency.value=0.1;lG.gain.value=150;lfo.connect(lG);lG.connect(filt.frequency);lfo.start();nd.push(lfo);
     [f,f*2].forEach((freq,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();g.gain.value=0.07;o.type='sine';o.frequency.value=freq;const lfo2=audioCtx.createOscillator(),lG2=audioCtx.createGain();lfo2.frequency.value=0.04+i*0.03;lG2.gain.value=0.3;lfo2.connect(lG2);lG2.connect(g.gain);lfo2.start();nd.push(lfo2);o.connect(g);g.connect(m);g.connect(rev);o.start();nd.push(o);});return nd;},
-  // 12 cloth — soft whisper
-  cloth:(f,m)=>{const nd=[];const rev=makeReverb(4,1.6);rev.connect(m);
-    const bs=audioCtx.sampleRate*2,buf=audioCtx.createBuffer(2,bs,audioCtx.sampleRate);for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<bs;i++)d[i]=Math.random()*2-1;}
-    const src=audioCtx.createBufferSource();src.buffer=buf;src.loop=true;
-    const filt=audioCtx.createBiquadFilter();filt.type='bandpass';filt.frequency.value=f;filt.Q.value=1.5;
-    const ng=audioCtx.createGain();ng.gain.value=0.35;src.connect(filt);filt.connect(ng);ng.connect(m);ng.connect(rev);src.start();nd.push(src);
-    [f*1.5,f*3].forEach((freq,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=freq;g.gain.value=0.15/(i+1);const lfo=audioCtx.createOscillator(),lG=audioCtx.createGain();lfo.frequency.value=0.2+i*0.1;lG.gain.value=0.2;lfo.connect(lG);lG.connect(g.gain);lfo.start();nd.push(lfo);o.connect(g);g.connect(m);g.connect(rev);o.start();nd.push(o);});return nd;},
+  // 12 cloth — very gentle silk pad
+  cloth:(f,m)=>{const nd=[];const rev=makeReverb(5,2);rev.connect(m);
+    // Pure sine pads only — no noise at all
+    [82,123,165,247].forEach((freq,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=freq;g.gain.value=0.07;const lfo=audioCtx.createOscillator(),lG=audioCtx.createGain();lfo.frequency.value=0.04+i*0.02;lG.gain.value=0.03;lfo.connect(lG);lG.connect(g.gain);lfo.start();nd.push(lfo);o.connect(g);g.connect(m);g.connect(rev);o.start();nd.push(o);});return nd;},
   // 13 resonator — handled by UI
   resonator:()=>[],
   // 14 neural net — neural pulses
@@ -340,7 +338,7 @@ function startEngSnd(freq=70){
   engineGain.gain.value=0;
   engineOsc.connect(engineFilter);engineFilter.connect(engineGain);engineGain.connect(audioCtx.destination);
   engineOsc.start();
-  engineGain.gain.setTargetAtTime(0.06,audioCtx.currentTime,0.3);
+  engineGain.gain.setTargetAtTime(0.22,audioCtx.currentTime,0.3);
   moveSnd=true;
 }
 function stopEngSnd(){
@@ -371,7 +369,7 @@ function isOnCanvas(ev){
 // 0. НЕЙРОМОРФНАЯ СКУЛЬПТУРА — цветная + курсор
 // ════════════════════════════════════════════════
 function createNeural(){
-  const g=new THREE.Group();const N=50000,geo=new THREE.BufferGeometry();
+  const g=new THREE.Group();const N=30000,geo=new THREE.BufferGeometry();
   const pos=new Float32Array(N*3),col=new Float32Array(N*3);
   geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
   geo.setAttribute('color',new THREE.BufferAttribute(col,3));
@@ -420,10 +418,13 @@ function createNeural(){
       const d2=dx*dx+dy2*dy2+dz*dz;
       if(d2<4){const d=Math.sqrt(d2)+0.01,force=(2-d)/2*1.2;nx+=dx/d*force;ny+=dy2/d*force;nz+=dz/d*force;}
       pa_[ix]=nx;pa_[ix+1]=ny;pa_[ix+2]=nz;
-      // Rich color — use hue1, hue2, hue3 channels separately
-      ca_[ix]=0.3+0.7*Math.abs(Math.sin(bx*0.9+p.hue*6.28+time*0.35));
-      ca_[ix+1]=0.25+0.75*Math.abs(Math.cos(by*0.75+p.hue2*6.28+time*0.28+p.shift));
-      ca_[ix+2]=0.4+0.6*Math.abs(Math.sin(bz*0.65+p.hue3*6.28+time*0.42+p.shift*1.5));
+      // Rich color — HSL-based, never white
+      const hueVal=(p.hue+Math.sin(bx*0.6+time*0.3)*0.15+Math.cos(by*0.5)*0.1)%1;
+      const hueVal2=(p.hue2+Math.cos(bz*0.7+time*0.25)*0.12)%1;
+      const sat=0.85+0.15*Math.sin(by*0.8+time*0.5);
+      const lum=0.35+0.35*Math.abs(Math.sin(bx*0.4+bz*0.3+p.shift+time*0.2));
+      const cc=new THREE.Color().setHSL(hueVal*0.7+hueVal2*0.3,sat,lum);
+      ca_[ix]=cc.r;ca_[ix+1]=cc.g;ca_[ix+2]=cc.b;
     }
     pa.needsUpdate=true;ca.needsUpdate=true;
   }
@@ -515,30 +516,157 @@ function createChaos(){
 }
 
 // ════════════════════════════════════════════════
-// 4. КЛЕТОЧНАЯ СТРУКТУРА
+// 4. ЖЕЛЕЙНЫЙ ШАР — тяни и растягивай!
 // ════════════════════════════════════════════════
 function createCell(){
   const g=new THREE.Group();
-  const membraneGeo=new THREE.IcosahedronGeometry(3.5,4);const membranePos=membraneGeo.attributes.position.array.slice();
-  const membraneMat=new THREE.MeshPhongMaterial({color:0x00ffcc,emissive:0x003322,transparent:true,opacity:0.12,side:THREE.DoubleSide});
-  const membrane=new THREE.Mesh(membraneGeo,membraneMat);g.add(membrane);
-  g.add(new THREE.Mesh(new THREE.SphereGeometry(2.8,32,16),new THREE.MeshPhongMaterial({color:0x0033aa,emissive:0x001144,transparent:true,opacity:0.18,side:THREE.BackSide})));
-  const nuclGeo=new THREE.IcosahedronGeometry(0.9,2);const nuclMat=new THREE.MeshPhongMaterial({color:0xff4488,emissive:0x441122,shininess:200});
-  const nucleus=new THREE.Mesh(nuclGeo,nuclMat);g.add(nucleus);
-  const nhalo=new THREE.Mesh(new THREE.SphereGeometry(1.1,32,16),new THREE.MeshPhongMaterial({color:0xff88cc,transparent:true,opacity:0.22,side:THREE.BackSide}));g.add(nhalo);
-  const organelles=[];
-  for(let i=0;i<18;i++){const r=1.3+Math.random()*1.4,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1),size=0.12+Math.random()*0.22;const geo2=Math.random()>0.5?new THREE.SphereGeometry(size,8,8):new THREE.TorusGeometry(size,size*0.4,8,12);const hue=0.45+Math.random()*0.4;const mat=new THREE.MeshPhongMaterial({color:new THREE.Color().setHSL(hue,0.9,0.6),emissive:new THREE.Color().setHSL(hue,0.9,0.15),transparent:true,opacity:0.7,shininess:120});const m2=new THREE.Mesh(geo2,mat);m2.position.set(r*Math.sin(ph)*Math.cos(th),r*Math.sin(ph)*Math.sin(th),r*Math.cos(ph));m2.userData={basePos:m2.position.clone(),phase:Math.random()*Math.PI*2,speed:0.5+Math.random()};g.add(m2);organelles.push(m2);}
-  const PN=25000,pGeo=new THREE.BufferGeometry(),pPos=new Float32Array(PN*3),pCol=new Float32Array(PN*3),pBase=new Float32Array(PN*3);
-  for(let i=0;i<PN;i++){const r=Math.pow(Math.random(),0.5)*3.2,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);pBase[i*3]=r*Math.sin(ph)*Math.cos(th);pBase[i*3+1]=r*Math.sin(ph)*Math.sin(th);pBase[i*3+2]=r*Math.cos(ph);}
-  pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
-  g.add(new THREE.Points(pGeo,new THREE.PointsMaterial({size:0.065,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true})));
-  const spikes=[];
-  for(let i=0;i<60;i++){const th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);const dir=new THREE.Vector3(Math.sin(ph)*Math.cos(th),Math.sin(ph)*Math.sin(th),Math.cos(ph));const spike=new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.04,0.35+Math.random()*0.3,4),new THREE.MeshPhongMaterial({color:0x00ffcc,emissive:0x003322,transparent:true,opacity:0.6}));spike.position.copy(dir.clone().multiplyScalar(3.4));spike.lookAt(0,0,0);spike.rotateX(Math.PI/2);spike.userData={phase:Math.random()*Math.PI*2};g.add(spike);spikes.push(spike);}
-  let clickPulse=0;
-  window.addEventListener('click',ev=>{if(curIdx!==4||!isOnCanvas(ev))return;clickPulse=1;if(audioCtx){const osc=audioCtx.createOscillator(),gn=audioCtx.createGain();osc.type='sine';osc.frequency.setValueAtTime(120,audioCtx.currentTime);osc.frequency.exponentialRampToValueAtTime(60,audioCtx.currentTime+0.5);gn.gain.setValueAtTime(0.18,audioCtx.currentTime);gn.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.6);osc.connect(gn);gn.connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+0.6);}});
-  let p={hue:0.5};
-  function generate(text){const h=hashString(text);p.hue=(h&0xFF)/256;membraneMat.color.setHSL(p.hue,0.9,0.6);nuclMat.color.setHSL((p.hue+0.5)%1,1,0.6);organelles.forEach(o=>{const hue2=p.hue+Math.random()*0.3;o.material.color.setHSL(hue2,0.9,0.6);o.material.emissive.setHSL(hue2,0.9,0.15);});setSeed(h);}
-  function update(){clickPulse=Math.max(0,clickPulse-0.02);const memPos=membraneGeo.attributes.position.array;for(let i=0;i<memPos.length/3;i++){const ix=i*3;const bx=membranePos[ix],by=membranePos[ix+1],bz=membranePos[ix+2];const n=simplex.noise3D(bx*0.5+time*0.3,by*0.5,bz*0.5)*0.25+Math.sin(time*0.8)*0.08+clickPulse*0.4;memPos[ix]=bx+bx*n;memPos[ix+1]=by+by*n;memPos[ix+2]=bz+bz*n;}membraneGeo.attributes.position.needsUpdate=true;membraneGeo.computeVertexNormals();const np=1+Math.sin(time*1.2)*0.08+clickPulse*0.3;nucleus.scale.setScalar(np);nhalo.scale.setScalar(np*1.05);nucleus.rotation.y+=0.005;organelles.forEach(o=>{const b=o.userData.basePos,ph=o.userData.phase,sp=o.userData.speed;o.position.x=b.x+simplex.noise3D(b.x*0.5+time*sp*0.4,b.y*0.5,b.z*0.5)*0.25*(1+clickPulse);o.position.y=b.y+simplex.noise3D(b.x*0.5,b.y*0.5+time*sp*0.4,b.z*0.5)*0.25*(1+clickPulse);o.position.z=b.z+simplex.noise3D(b.x*0.5,b.y*0.5,b.z*0.5+time*sp*0.4)*0.25*(1+clickPulse);o.rotation.x+=0.01*sp;o.rotation.z+=0.008*sp;const pulse=1+Math.sin(time*sp+ph)*0.15+clickPulse*0.2;o.scale.setScalar(pulse);});for(let i=0;i<PN;i++){const ix=i*3,bx=pBase[ix],by=pBase[ix+1],bz=pBase[ix+2];const n=simplex.noise3D(bx*0.8+time*0.35,by*0.8,bz*0.8)*0.5;pPos[ix]=bx+simplex.noise3D(bx*0.4+time*0.25,by*0.4,bz*0.4)*0.3;pPos[ix+1]=by+simplex.noise3D(bx*0.4,by*0.4+time*0.25,bz*0.4)*0.3;pPos[ix+2]=bz+simplex.noise3D(bx*0.4,by*0.4,bz*0.4+time*0.25)*0.3;const dist=Math.sqrt(bx*bx+by*by+bz*bz)/3.2;const bright=0.15+dist*0.4+n*0.3+clickPulse*0.4;const hue2=(p.hue+dist*0.3+n*0.2+time*0.03)%1;const c=new THREE.Color().setHSL(hue2,0.9,Math.min(0.85,bright));pCol[ix]=c.r;pCol[ix+1]=c.g;pCol[ix+2]=c.b;}pGeo.attributes.position.needsUpdate=true;pGeo.attributes.color.needsUpdate=true;spikes.forEach(s=>{s.scale.y=1+Math.sin(time*3+s.userData.phase)*0.25+clickPulse*0.4;});g.rotation.y+=0.002;}
+  const DETAIL=4;
+  const jellyGeo=new THREE.IcosahedronGeometry(2.8,DETAIL);
+  const vCount=jellyGeo.attributes.position.count;
+  const restPos=Float32Array.from(jellyGeo.attributes.position.array);
+  const curPos=jellyGeo.attributes.position.array;
+  const vel=new Float32Array(vCount*3); // velocity per vertex
+  // Vertex colors
+  const vCols=new Float32Array(vCount*3);
+  jellyGeo.setAttribute('color',new THREE.BufferAttribute(vCols,3));
+
+  const jellyMat=new THREE.MeshPhongMaterial({
+    vertexColors:true,transparent:true,opacity:0.75,
+    shininess:280,specular:new THREE.Color(0xffffff),
+    side:THREE.DoubleSide,depthWrite:true
+  });
+  const jelly=new THREE.Mesh(jellyGeo,jellyMat);g.add(jelly);
+  // Inner glow sphere
+  const innerMat=new THREE.MeshPhongMaterial({color:0xff88cc,emissive:0x220033,transparent:true,opacity:0.35,side:THREE.BackSide});
+  const inner=new THREE.Mesh(new THREE.SphereGeometry(2.0,24,12),innerMat);g.add(inner);
+  // Wireframe overlay
+  g.add(new THREE.Mesh(jellyGeo.clone(),new THREE.MeshBasicMaterial({color:0x88ffee,wireframe:true,transparent:true,opacity:0.08})));
+  // Sparkle particles inside
+  const SPN=4000,spGeo=new THREE.BufferGeometry(),spPos=new Float32Array(SPN*3),spCol=new Float32Array(SPN*3),spPhase=new Float32Array(SPN);
+  for(let i=0;i<SPN;i++){const r=Math.pow(Math.random(),0.5)*2.5,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);spPos[i*3]=r*Math.sin(ph)*Math.cos(th);spPos[i*3+1]=r*Math.sin(ph)*Math.sin(th);spPos[i*3+2]=r*Math.cos(ph);spPhase[i]=Math.random()*Math.PI*2;}
+  spGeo.setAttribute('position',new THREE.BufferAttribute(spPos,3));
+  spGeo.setAttribute('color',new THREE.BufferAttribute(spCol,3));
+  g.add(new THREE.Points(spGeo,new THREE.PointsMaterial({size:0.08,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true})));
+  // Light inside
+  const pLight=new THREE.PointLight(0xff44aa,1.5,8);g.add(pLight);
+
+  // Dragging state
+  let dragging=false,dragIdx=-1;
+  const dragPlane=new THREE.Plane();
+  const rc=new THREE.Raycaster(),mVec=new THREE.Vector2(),dragPoint=new THREE.Vector3();
+
+  window.addEventListener('pointerdown',ev=>{
+    if(curIdx!==4||!isOnCanvas(ev))return;
+    mVec.x=(ev.clientX/innerWidth)*2-1;mVec.y=-(ev.clientY/innerHeight)*2+1;
+    rc.setFromCamera(mVec,camera);
+    const hits=rc.intersectObject(jelly);
+    if(hits.length>0){
+      dragging=true;dragIdx=-1;
+      const hitP=hits[0].point;
+      // Find closest vertex
+      let minD=Infinity;
+      for(let i=0;i<vCount;i++){
+        const dx=curPos[i*3]-hitP.x,dy=curPos[i*3+1]-hitP.y,dz=curPos[i*3+2]-hitP.z;
+        const d2=dx*dx+dy*dy+dz*dz;
+        if(d2<minD){minD=d2;dragIdx=i;}
+      }
+      // Set drag plane perpendicular to camera
+      const camDir=camera.getWorldDirection(new THREE.Vector3());
+      dragPlane.setFromNormalAndCoplanarPoint(camDir,hitP);
+      controls.enabled=false; // Disable orbit while dragging
+      if(audioCtx){const osc=audioCtx.createOscillator(),gn=audioCtx.createGain();osc.type='sine';osc.frequency.value=200;gn.gain.setValueAtTime(0.1,audioCtx.currentTime);gn.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.2);osc.connect(gn);gn.connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+0.2);}
+    }
+  });
+  window.addEventListener('pointermove',ev=>{
+    if(!dragging||curIdx!==4||dragIdx<0)return;
+    mVec.x=(ev.clientX/innerWidth)*2-1;mVec.y=-(ev.clientY/innerHeight)*2+1;
+    rc.setFromCamera(mVec,camera);
+    rc.ray.intersectPlane(dragPlane,dragPoint);
+    if(dragPoint){
+      // Move the dragged vertex + nearby vertices
+      for(let i=0;i<vCount;i++){
+        const dx=restPos[i*3]-restPos[dragIdx*3],dy=restPos[i*3+1]-restPos[dragIdx*3+1],dz=restPos[i*3+2]-restPos[dragIdx*3+2];
+        const d=Math.sqrt(dx*dx+dy*dy+dz*dz);
+        const influence=Math.exp(-d*d*0.8); // Gaussian falloff
+        if(influence>0.01){
+          const tx=restPos[i*3]+(dragPoint.x-restPos[dragIdx*3])*influence;
+          const ty=restPos[i*3+1]+(dragPoint.y-restPos[dragIdx*3+1])*influence;
+          const tz=restPos[i*3+2]+(dragPoint.z-restPos[dragIdx*3+2])*influence;
+          vel[i*3]+=(tx-curPos[i*3])*0.15;
+          vel[i*3+1]+=(ty-curPos[i*3+1])*0.15;
+          vel[i*3+2]+=(tz-curPos[i*3+2])*0.15;
+        }
+      }
+    }
+  });
+  window.addEventListener('pointerup',()=>{
+    if(dragging&&curIdx===4){
+      dragging=false;dragIdx=-1;controls.enabled=true;
+      if(audioCtx){const osc=audioCtx.createOscillator(),gn=audioCtx.createGain();osc.type='sine';osc.frequency.setValueAtTime(400,audioCtx.currentTime);osc.frequency.exponentialRampToValueAtTime(150,audioCtx.currentTime+0.4);gn.gain.setValueAtTime(0.12,audioCtx.currentTime);gn.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.4);osc.connect(gn);gn.connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+0.4);}
+    }
+  });
+
+  let p={hue:0.45,stiffness:0.12,damping:0.88};
+  function generate(text){
+    const h=hashString(text);p.hue=(h&0xFF)/256;
+    p.stiffness=0.08+((h>>8)&0x0F)/120;
+    p.damping=0.85+((h>>12)&0x07)/200;
+    // Reset positions
+    for(let i=0;i<vCount*3;i++){curPos[i]=restPos[i];vel[i]=0;}
+    jellyGeo.attributes.position.needsUpdate=true;
+    innerMat.color.setHSL((p.hue+0.3)%1,0.9,0.5);
+    innerMat.emissive.setHSL(p.hue,0.8,0.08);
+    pLight.color.setHSL(p.hue,1,0.6);
+    setSeed(h);
+  }
+  function update(){
+    // Spring physics: pull each vertex back to rest, apply velocity
+    for(let i=0;i<vCount;i++){
+      const ix=i*3;
+      if(!(dragging&&i===dragIdx)){
+        // Spring force toward rest position
+        vel[ix]+=(restPos[ix]-curPos[ix])*p.stiffness;
+        vel[ix+1]+=(restPos[ix+1]-curPos[ix+1])*p.stiffness;
+        vel[ix+2]+=(restPos[ix+2]-curPos[ix+2])*p.stiffness;
+        // Add gentle breathing noise
+        const n=simplex.noise3D(restPos[ix]*0.5+time*0.4,restPos[ix+1]*0.5,restPos[ix+2]*0.5)*0.003;
+        vel[ix]+=restPos[ix]*n;vel[ix+1]+=restPos[ix+1]*n;vel[ix+2]+=restPos[ix+2]*n;
+      }
+      // Damping
+      vel[ix]*=p.damping;vel[ix+1]*=p.damping;vel[ix+2]*=p.damping;
+      // Integrate
+      curPos[ix]+=vel[ix];curPos[ix+1]+=vel[ix+1];curPos[ix+2]+=vel[ix+2];
+      // Color based on stretch
+      const dx=curPos[ix]-restPos[ix],dy=curPos[ix+1]-restPos[ix+1],dz=curPos[ix+2]-restPos[ix+2];
+      const stretch=Math.sqrt(dx*dx+dy*dy+dz*dz);
+      const hue2=(p.hue+stretch*0.3+Math.sin(time*0.5+i*0.01)*0.05)%1;
+      const lum=0.4+Math.min(0.4,stretch*0.5);
+      const c=new THREE.Color().setHSL(hue2,0.9,lum);
+      vCols[ix]=c.r;vCols[ix+1]=c.g;vCols[ix+2]=c.b;
+    }
+    jellyGeo.attributes.position.needsUpdate=true;
+    jellyGeo.attributes.color.needsUpdate=true;
+    jellyGeo.computeVertexNormals();
+    // Inner glow pulse
+    const pulse=1+Math.sin(time*1.5)*0.06;
+    inner.scale.setScalar(pulse);
+    pLight.intensity=1.2+Math.sin(time*2)*0.5;
+    // Sparkles
+    for(let i=0;i<SPN;i++){
+      const ph=spPhase[i];
+      spPos[i*3]+=Math.sin(time*0.8+ph)*0.003;
+      spPos[i*3+1]+=Math.cos(time*0.6+ph)*0.003;
+      spPos[i*3+2]+=Math.sin(time*0.7+ph*1.3)*0.003;
+      // Keep inside sphere
+      const r=Math.sqrt(spPos[i*3]**2+spPos[i*3+1]**2+spPos[i*3+2]**2);
+      if(r>2.4){spPos[i*3]*=2.3/r;spPos[i*3+1]*=2.3/r;spPos[i*3+2]*=2.3/r;}
+      const bright=0.2+0.4*Math.sin(time*2+ph);
+      const sc=new THREE.Color().setHSL((p.hue+0.2+Math.sin(ph)*0.1)%1,0.9,Math.max(0,bright));
+      spCol[i*3]=sc.r;spCol[i*3+1]=sc.g;spCol[i*3+2]=sc.b;
+    }
+    spGeo.attributes.position.needsUpdate=true;spGeo.attributes.color.needsUpdate=true;
+    if(!dragging)g.rotation.y+=0.003;
+  }
   return{group:g,update,generate};
 }
 
@@ -564,7 +692,10 @@ function createTree(){
   const BPN=200,bGeo=new THREE.BufferGeometry(),bPos=new Float32Array(BPN*3),bCol=new Float32Array(BPN*3);bGeo.setAttribute('position',new THREE.BufferAttribute(bPos,3));bGeo.setAttribute('color',new THREE.BufferAttribute(bCol,3));g.add(new THREE.Points(bGeo,new THREE.PointsMaterial({size:0.25,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false})));
   window.addEventListener('click',ev=>{if(curIdx!==6||!isOnCanvas(ev))return;for(let i=0;i<80;i++)clickBurst.push({x:(Math.random()-0.5)*4,y:Math.random()*3,z:(Math.random()-0.5)*4,vx:(Math.random()-0.5)*0.15,vy:0.05+Math.random()*0.1,vz:(Math.random()-0.5)*0.15,life:1,hue:0.2+Math.random()*0.2});});
   function generate(text){while(g.children.length>1)g.remove(g.children[1]);const h=hashString(text),levels=3+((h>>2)&0x07),len=1.5+((h>>8)&0x0F)/5,angle=0.3+((h>>12)&0x0F)/10,hue=(h&0xFF)/256;const pts=[],stack=[{pos:new THREE.Vector3(0,-3,0),dir:new THREE.Vector3(0,1,0),len,level:0}];while(stack.length){const{pos,dir,len:l,level}=stack.pop();if(level>=levels)continue;const end=pos.clone().add(dir.clone().multiplyScalar(l));pts.push(pos,end);[{x:1,y:0,z:0},{x:-1,y:0,z:0},{x:0,y:0,z:1},{x:0,y:0,z:-1}].forEach(ax=>{stack.push({pos:end,dir:dir.clone().applyAxisAngle(new THREE.Vector3(ax.x,ax.y,ax.z),angle*(0.8+Math.random()*0.4)),len:l*0.7,level:level+1});});}const lGeo=new THREE.BufferGeometry();const lPos=new Float32Array(pts.length*3);pts.forEach((p2,i)=>{lPos[i*3]=p2.x;lPos[i*3+1]=p2.y;lPos[i*3+2]=p2.z;});lGeo.setAttribute('position',new THREE.BufferAttribute(lPos,3));const lMat=new THREE.LineBasicMaterial({color:0xaa8866});lMat.color.setHSL(hue,0.8,0.5);g.add(new THREE.LineSegments(lGeo,lMat));const lfN=3000,lfGeo=new THREE.BufferGeometry(),lfPos=new Float32Array(lfN*3),lfCol=new Float32Array(lfN*3);for(let i=0;i<lfN;i++){const r=3*Math.random(),th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);lfPos[i*3]=r*Math.sin(ph)*Math.cos(th);lfPos[i*3+1]=r*Math.sin(ph)*Math.sin(th)+2;lfPos[i*3+2]=r*Math.cos(ph);lfCol[i*3]=0.1+0.5*Math.random();lfCol[i*3+1]=0.5+0.5*Math.random();lfCol[i*3+2]=0.05+0.1*Math.random();}lfGeo.setAttribute('position',new THREE.BufferAttribute(lfPos,3));lfGeo.setAttribute('color',new THREE.BufferAttribute(lfCol,3));leaves=new THREE.Points(lfGeo,new THREE.PointsMaterial({size:0.2,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false}));g.add(leaves);setSeed(h);}
-  function update(){g.rotation.y+=0.001;if(leaves)leaves.rotation.y+=0.003;for(let i=0;i<Math.min(clickBurst.length,BPN);i++){const b=clickBurst[i];b.x+=b.vx;b.y+=b.vy;b.z+=b.vz;b.vy-=0.004;b.life-=0.015;bPos[i*3]=b.x;bPos[i*3+1]=b.y;bPos[i*3+2]=b.z;const c=new THREE.Color().setHSL(b.hue,1,b.life*0.7);bCol[i*3]=c.r;bCol[i*3+1]=c.g;bCol[i*3+2]=c.b;}for(let i=clickBurst.length;i<BPN;i++){bPos[i*3]=9999;}clickBurst.splice(0,clickBurst.filter(b=>b.life<=0).length);bGeo.attributes.position.needsUpdate=true;bGeo.attributes.color.needsUpdate=true;}
+  function update(){g.rotation.y+=0.001;
+    // Animate leaves — gentle wind + falling
+    if(leaves){leaves.rotation.y+=0.003;const lp=leaves.geometry.attributes.position.array,lc=leaves.geometry.attributes.color.array;for(let i=0;i<3000;i++){const ix=i*3;lp[ix]+=Math.sin(time*0.7+i*0.05)*0.003+simplex.noise3D(lp[ix]*0.2,lp[ix+1]*0.2+time*0.15,lp[ix+2]*0.2)*0.008;lp[ix+1]-=0.002+Math.random()*0.001;lp[ix+2]+=Math.cos(time*0.5+i*0.03)*0.003;if(lp[ix+1]<-2){lp[ix]=(Math.random()-0.5)*5;lp[ix+1]=3+Math.random()*2;lp[ix+2]=(Math.random()-0.5)*5;}const bright=0.4+0.3*Math.sin(time+i*0.1);lc[ix]=0.1+bright*0.3;lc[ix+1]=0.4+bright*0.5;lc[ix+2]=0.05;}leaves.geometry.attributes.position.needsUpdate=true;leaves.geometry.attributes.color.needsUpdate=true;}
+    for(let i=0;i<Math.min(clickBurst.length,BPN);i++){const b=clickBurst[i];b.x+=b.vx;b.y+=b.vy;b.z+=b.vz;b.vy-=0.004;b.life-=0.015;bPos[i*3]=b.x;bPos[i*3+1]=b.y;bPos[i*3+2]=b.z;const c=new THREE.Color().setHSL(b.hue,1,b.life*0.7);bCol[i*3]=c.r;bCol[i*3+1]=c.g;bCol[i*3+2]=c.b;}for(let i=clickBurst.length;i<BPN;i++){bPos[i*3]=9999;}clickBurst.splice(0,clickBurst.filter(b=>b.life<=0).length);bGeo.attributes.position.needsUpdate=true;bGeo.attributes.color.needsUpdate=true;}
   return{group:g,update,generate};
 }
 
@@ -998,7 +1129,7 @@ objects.forEach((obj,i)=>{scene.add(obj.group);obj.group.visible=(i===0);});
 // ── UI ────────────────────────────────────────────
 const clickHints={
   1:'⚡ Кликай — электрический разряд!',2:'🔥 Кликай — взрыв пламени!',3:'💥 Кликай — взрыв геометрии!',
-  4:'🧬 Кликай — пульсация клетки!',6:'🍃 Кликай — листья летят!',7:'🌀 Кликай — смена аттрактора!',
+  4:'🫧 Тяни мышкой — растягивай желе!',6:'🍃 Кликай — листья летят!',7:'🌀 Кликай — смена аттрактора!',
   10:'🌑 Двигай мышью — свет тянется к дыре!',11:'🌊 Кликай — биолюминесценция!',
   12:'💨 Кликай — порыв ветра по ткани!',14:'🧠 Кликай по нейрону!',15:'⚗️ Кликай — смена формы!',
 };

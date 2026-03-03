@@ -1,56 +1,100 @@
-{% extends "base.html" %}
-{% block title %}Программа фестиваля{% endblock %}
-
-{% block content %}
-<section class="hero" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding-top: 150px;">
+{% extends "base.html" %} {% block title %}Программа фестиваля{% endblock %} {%
+block content %}
+<section
+  class="hero"
+  style="
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 150px;
+  "
+>
   <div>
-    <h2 style="margin:0 0 6px 0;">Программа фестиваля</h2>
+    <h2 style="margin: 0 0 6px 0">Программа фестиваля</h2>
     <div class="muted">События, лекции, воркшопы и перформансы.</div>
   </div>
 
   {% if user.is_staff %}
-    <a class="button" href="/admin/program/event/add/">Добавить событие</a>
+  <a class="button" href="/admin/program/event/add/">Добавить событие</a>
   {% endif %}
 </section>
 
-<div class="card" style="margin-bottom:14px;">
-  <form method="get" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-    <select name="format"
-            style="padding:10px 12px;border-radius:999px;border:1px solid rgba(15,23,42,.10);background:rgba(255,255,255,.75);">
+<div class="card" style="margin-bottom: 14px">
+  <form
+    method="get"
+    style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center"
+  >
+    <select
+      name="format"
+      style="
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.1);
+        background: rgba(255, 255, 255, 0.75);
+      "
+    >
       <option value="">Все форматы</option>
-      <option value="talk" {% if fmt == 'talk' %}selected{% endif %}>Лекция</option>
-      <option value="workshop" {% if fmt == 'workshop' %}selected{% endif %}>Мастер-класс</option>
-      <option value="show" {% if fmt == 'show' %}selected{% endif %}>Перформанс</option>
-      <option value="expo" {% if fmt == 'expo' %}selected{% endif %}>Выставка</option>
+      <option value="talk" {% if fmt="" ="talk" %}selected{% endif %}>
+        Лекция
+      </option>
+      <option value="workshop" {% if fmt="" ="workshop" %}selected{% endif %}>
+        Мастер-класс
+      </option>
+      <option value="show" {% if fmt="" ="show" %}selected{% endif %}>
+        Перформанс
+      </option>
+      <option value="expo" {% if fmt="" ="expo" %}selected{% endif %}>
+        Выставка
+      </option>
     </select>
 
-    <label class="muted" style="display:flex;align-items:center;gap:8px;">
-      <input type="checkbox" name="upcoming" value="1" {% if upcoming == '1' %}checked{% endif %}>
+    <label class="muted" style="display: flex; align-items: center; gap: 8px">
+      <input
+        type="checkbox"
+        name="upcoming"
+        value="1"
+        {%
+        if
+        upcoming=""
+        ="1"
+        %}checked{%
+        endif
+        %}
+      />
       только будущие
     </label>
 
-    <button class="button" type="submit" style="margin-top:0;">Применить</button>
-    <a class="muted" href="/program/" style="margin-left:6px;">сброс</a>
+    <button class="button" type="submit" style="margin-top: 0">
+      Применить
+    </button>
+    <a class="muted" href="/program/" style="margin-left: 6px">сброс</a>
   </form>
 </div>
 
 <div class="grid">
   {% for e in events %}
-    <a class="card" href="/program/{{ e.id }}/" style="grid-column: span 6;">
-      <div class="muted" style="margin-bottom:6px;">
-        {{ e.starts_at|date:"d.m.Y H:i" }} • {{ e.get_format_display }}
-      </div>
-      <div style="font-weight:800; font-size:18px; margin-bottom:6px;">{{ e.title }}</div>
-      <div class="muted">
-        {% if e.location %}📍 {{ e.location }}{% endif %}
-        {% if e.speaker %}<span style="margin-left:10px;">🎙 {{ e.speaker }}</span>{% endif %}
-      </div>
-    </a>
-  {% empty %}
-    <div class="card" style="grid-column: span 12;">
-      <h3 style="margin:0 0 6px 0;">Событий пока нет</h3>
-      <div class="muted">Добавь события через админку — и они появятся здесь.</div>
+  <a class="card" href="/program/{{ e.id }}/" style="grid-column: span 6">
+    <div class="muted" style="margin-bottom: 6px">
+      {{ e.starts_at|date:"d.m.Y H:i" }} • {{ e.get_format_display }}
     </div>
+    <div style="font-weight: 800; font-size: 18px; margin-bottom: 6px">
+      {{ e.title }}
+    </div>
+    <div class="muted">
+      {% if e.location %}📍 {{ e.location }}{% endif %} {% if e.speaker %}<span
+        style="margin-left: 10px"
+        >🎙 {{ e.speaker }}</span
+      >{% endif %}
+    </div>
+  </a>
+  {% empty %}
+  <div class="card" style="grid-column: span 12">
+    <h3 style="margin: 0 0 6px 0">Событий пока нет</h3>
+    <div class="muted">
+      Добавь события через админку — и они появятся здесь.
+    </div>
+  </div>
   {% endfor %}
 </div>
 {% endblock %}

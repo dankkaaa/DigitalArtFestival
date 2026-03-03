@@ -1,45 +1,53 @@
-{% extends "base.html" %}
-{% block title %}Вход{% endblock %}
+{% extends "base.html" %} {% block title %}Вход{% endblock %} {% block content
+%}
+<section class="hero" style="padding-top: 150px">
+  <h2>Вход</h2>
+  <p class="muted">
+    Войди, чтобы записываться на события и управлять своими заявками.
+  </p>
+</section>
 
-{% block content %}
-<section class="hero" style="padding-top: 150px;">
-        <h2>Вход</h2>
-        <p class="muted">Войди, чтобы записываться на события и управлять своими заявками.</p>
-    </section>
+<div class="card">
+  {% if form.errors %}
+  <div class="alert">Проверь логин/пароль и попробуй снова.</div>
+  {% endif %}
 
-    <div class="card">
-        {% if form.errors %}
-            <div class="alert">
-                Проверь логин/пароль и попробуй снова.
-            </div>
-        {% endif %}
+  <form method="post" class="form">
+    {% csrf_token %}
 
-        <form method="post" class="form">
-            {% csrf_token %}
+    <label class="label">Логин</label>
+    {{ form.username }}
 
-            <label class="label">Логин</label>
-            {{ form.username }}
+    <div style="height: 10px"></div>
 
-            <div style="height:10px"></div>
+    <label class="label">Пароль</label>
+    {{ form.password }}
 
-            <label class="label">Пароль</label>
-            {{ form.password }}
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 14px;
+      "
+    >
+      <button class="button" type="submit">Войти</button>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px;">
-                <button class="button" type="submit">Войти</button>
-
-                {% if next %}
-                    <span class="muted" style="font-size:13px;">после входа вернём туда же</span>
-                {% endif %}
-            </div>
-
-            {% if next %}
-                <input type="hidden" name="next" value="{{ next }}">
-            {% endif %}
-        </form>
-
-        <p class="muted" style="margin-top:14px; font-size:20px;">
-            Нет аккаунта? Для учебного проекта проще создать пользователя в админке.
-        </p>
+      {% if next %}
+      <span class="muted" style="font-size: 13px"
+        >после входа вернём туда же</span
+      >
+      {% endif %}
     </div>
+
+    {% if next %}
+    <input type="hidden" name="next" value="{{ next }}" />
+    {% endif %}
+  </form>
+
+  <p class="muted" style="margin-top: 14px; font-size: 20px">
+    Нет аккаунта? Для учебного проекта проще создать пользователя в админке.
+  </p>
+</div>
 {% endblock %}
