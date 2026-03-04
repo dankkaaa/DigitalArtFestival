@@ -1,5 +1,4 @@
-{% extends "base.html" %} {% block title %}Программа фестиваля{% endblock %} {%
-block content %}
+{% extends "base.html" %} {% block title %}Программа фестиваля{% endblock %} {% block content %}
 <section
   class="hero"
   style="
@@ -21,53 +20,21 @@ block content %}
 </section>
 
 <div class="card" style="margin-bottom: 14px">
-  <form
-    method="get"
-    style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center"
-  >
-    <select
-      name="format"
-      style="
-        padding: 10px 12px;
-        border-radius: 999px;
-        border: 1px solid rgba(15, 23, 42, 0.1);
-        background: rgba(255, 255, 255, 0.75);
-      "
-    >
+  <form method="get" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center">
+    <select name="format" style="padding: 10px 12px; border-radius: 999px; border: 1px solid rgba(15, 23, 42, 0.1); background: rgba(255, 255, 255, 0.75);">
       <option value="">Все форматы</option>
-      <option value="talk" {% if fmt="" ="talk" %}selected{% endif %}>
-        Лекция
-      </option>
-      <option value="workshop" {% if fmt="" ="workshop" %}selected{% endif %}>
-        Мастер-класс
-      </option>
-      <option value="show" {% if fmt="" ="show" %}selected{% endif %}>
-        Перформанс
-      </option>
-      <option value="expo" {% if fmt="" ="expo" %}selected{% endif %}>
-        Выставка
-      </option>
+      <option value="talk" {% if fmt == "talk" %}selected{% endif %}>Лекция</option>
+      <option value="workshop" {% if fmt == "workshop" %}selected{% endif %}>Мастер-класс</option>
+      <option value="show" {% if fmt == "show" %}selected{% endif %}>Перформанс</option>
+      <option value="expo" {% if fmt == "expo" %}selected{% endif %}>Выставка</option>
     </select>
 
     <label class="muted" style="display: flex; align-items: center; gap: 8px">
-      <input
-        type="checkbox"
-        name="upcoming"
-        value="1"
-        {%
-        if
-        upcoming=""
-        ="1"
-        %}checked{%
-        endif
-        %}
-      />
+      <input type="checkbox" name="upcoming" value="1" {% if upcoming == "1" %}checked{% endif %} />
       только будущие
     </label>
 
-    <button class="button" type="submit" style="margin-top: 0">
-      Применить
-    </button>
+    <button class="button" type="submit" style="margin-top: 0">Применить</button>
     <a class="muted" href="/program/" style="margin-left: 6px">сброс</a>
   </form>
 </div>
@@ -80,6 +47,9 @@ block content %}
     </div>
     <div style="font-weight: 800; font-size: 18px; margin-bottom: 6px">
       {{ e.title }}
+      {% if e.starts_at < now %}
+          <span style="background: #982598; color: #F1E9E9; padding: 2px 6px; font-size: 0.8rem; margin-left: 10px;">Завершено</span>
+      {% endif %}
     </div>
     <div class="muted">
       {% if e.location %}📍 {{ e.location }}{% endif %} {% if e.speaker %}<span

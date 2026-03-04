@@ -98,67 +98,38 @@
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             });
 
-            // Эффект пикселей при клике
+            // Эффект пикселей при клике (общий)
             document.addEventListener('click', function(e) {
-                for (let i = 0; i < 10; i++) {
+                // Проверяем, кликнули ли по кнопке лайка (или форме лайка)
+                const isLike = e.target.closest('form[action*="like"]') || 
+                            (e.target.closest('button[type="submit"]') && e.target.closest('form'));
+
+                // Генерируем частицы
+                for (let i = 0; i < (isLike ? 8 : 10); i++) {
                     const pixel = document.createElement('div');
                     pixel.className = 'pixel';
-                    pixel.style.left = (e.clientX + (Math.random() - 0.5) * 40) + 'px';
-                    pixel.style.top = (e.clientY + (Math.random() - 0.5) * 40) + 'px';
-                    pixel.style.background = i % 2 === 0 ? '#15173D' : '#982598';
+                    
+                    if (isLike) {
+                        // Для лайков – красные сердечки
+                        pixel.textContent = '❤️';
+                        pixel.style.fontSize = '16px';
+                        pixel.style.background = 'transparent';
+                        pixel.style.color = '#ff3366';
+                        pixel.style.width = 'auto';
+                        pixel.style.height = 'auto';
+                    } else {
+                        // Для остальных кликов – пиксели наших цветов
+                        pixel.style.background = i % 2 === 0 ? '#15173D' : '#982598';
+                        pixel.style.width = '4px';
+                        pixel.style.height = '4px';
+                    }
+                    
+                    pixel.style.left = (e.clientX + (Math.random() - 0.5) * 60) + 'px';
+                    pixel.style.top = (e.clientY + (Math.random() - 0.5) * 60) + 'px';
                     document.body.appendChild(pixel);
-                    setTimeout(() => {
-                    typeText(titleEl, cursorTitle, titleText, 50, () => {
-                        typeText(subEl, cursorSub, subText, 40, () => {
-                            header.classList.add('visible');
-                            footer.classList.add('visible');
-                            document.body.classList.add('loaded'); // разблокируем скролл
-                            initReveal();
-                        });
-                    });
-                }, 2000);
+                    setTimeout(() => pixel.remove(), 800);
                 }
             });
-            // Эффект пикселей при клике (общий)
-document.addEventListener('click', function(e) {
-    // Проверяем, кликнули ли по кнопке лайка (или форме лайка)
-    const isLike = e.target.closest('form[action*="like"]') || e.target.closest('button[type="submit"]') && e.target.closest('form');
-
-    // Определяем цвет и символ
-    let color, char;
-    if (isLike) {
-        // Для лайков – красные сердечки
-        color = '#ff3366'; // ярко-красный
-        char = '❤️';
-    } else {
-        // Для остальных кликов – пиксели наших цветов
-        color = i % 2 === 0 ? '#15173D' : '#982598';
-        char = ''; // без символа, просто квадратик
-    }
-
-    // Генерируем частицы
-    for (let i = 0; i < (isLike ? 8 : 10); i++) {
-        const pixel = document.createElement('div');
-        pixel.className = 'pixel';
-        if (char) {
-            pixel.textContent = char;
-            pixel.style.fontSize = '16px';
-            pixel.style.background = 'transparent';
-            pixel.style.color = color;
-            pixel.style.width = 'auto';
-            pixel.style.height = 'auto';
-        } else {
-            pixel.style.background = color;
-            pixel.style.width = '4px';
-            pixel.style.height = '4px';
-        }
-        pixel.style.left = (e.clientX + (Math.random() - 0.5) * 60) + 'px';
-        pixel.style.top = (e.clientY + (Math.random() - 0.5) * 60) + 'px';
-        document.body.appendChild(pixel);
-        setTimeout(() => pixel.remove(), 800);
-    }
-});
-
             // Анимация открытия (page-reveal) — только на главной
             setTimeout(() => {
                 document.body.classList.add('loaded');

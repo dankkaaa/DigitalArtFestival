@@ -1,5 +1,5 @@
-{% extends "base.html" %} {% block title %}Регистрация{% endblock %} {% block
-content %}
+{% extends "base.html" %} {% block title %}Регистрация{% endblock %}
+ {% block content %}
 <section class="hero" style="padding-top: 150px">
   <h2>Регистрация</h2>
   <p class="muted">Создай аккаунт, чтобы записываться на события.</p>
@@ -33,6 +33,11 @@ content %}
     <div style="height: 18px"></div>
 
     <button class="button" type="submit">Зарегистрироваться</button>
+    {% if form.errors %}
+    <div class="custom-alert alert-error">
+        {{ form.errors }}
+    </div>
+{% endif %}
   </form>
 </div>
 {% endblock %}
