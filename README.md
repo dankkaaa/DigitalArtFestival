@@ -61,3 +61,6 @@ cd DigitalArtFestival
 
 # Поднимаем контейнеры
 docker-compose up --build
+
+
+1kop12kd team, 2026
